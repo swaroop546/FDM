@@ -14,6 +14,18 @@ import SemesterFeedback from './pages/SemesterFeedback';
 import FeedbackPreview from './pages/FeedbackPreview';
 import FeedbackReceipt from './pages/FeedbackReceipt';
 
+// HOD Imports
+import HODLayout from './components/HOD/HODLayout';
+import HODDashboard from './pages/HOD/HODDashboard';
+import FeedbackManagement from './pages/HOD/FeedbackManagement';
+import SemesterSelection from './pages/HOD/SemesterSelection';
+import TimetableView from './pages/HOD/TimetableView';
+import FeedbackAnalytics from './pages/HOD/FeedbackAnalytics';
+import AnalyticsSemesterSelection from './pages/HOD/AnalyticsSemesterSelection';
+import AnalyticsReport from './pages/HOD/AnalyticsReport';
+import HODChangePassword from './pages/HOD/HODChangePassword';
+import HODHelp from './pages/HOD/HODHelp';
+
 function App() {
   return (
     <Router>
@@ -42,8 +54,18 @@ function App() {
         {/* Faculty Routes */}
         <Route path="/faculty/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white"><div className="text-center"><h1 className="text-2xl font-bold">Faculty Dashboard</h1><p className="text-sm text-gray-600 mt-2">Coming Soon...</p></div></div>} />
         
-        {/* HOD Routes */}
-        <Route path="/hod/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-white"><div className="text-center"><h1 className="text-2xl font-bold">HOD Dashboard</h1><p className="text-sm text-gray-600 mt-2">Coming Soon...</p></div></div>} />
+        {/* HOD Routes with Sidebar Layout */}
+        <Route path="/hod" element={<HODLayout />}>
+          <Route path="dashboard" element={<HODDashboard />} />
+          <Route path="feedback-management" element={<FeedbackManagement />} />
+          <Route path="feedback-management/semesters" element={<SemesterSelection />} />
+          <Route path="feedback-management/timetable" element={<TimetableView />} />
+          <Route path="feedback-analytics" element={<FeedbackAnalytics />} />
+          <Route path="feedback-analytics/semesters" element={<AnalyticsSemesterSelection />} />
+          <Route path="feedback-analytics/report" element={<AnalyticsReport />} />
+          <Route path="change-password" element={<HODChangePassword />} />
+          <Route path="help" element={<HODHelp />} />
+        </Route>
         
         {/* Admin Routes */}
         <Route path="/admin/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-white"><div className="text-center"><h1 className="text-2xl font-bold">Admin Dashboard</h1><p className="text-sm text-gray-600 mt-2">Coming Soon...</p></div></div>} />
