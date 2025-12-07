@@ -1,18 +1,15 @@
 import { motion } from 'framer-motion';
-import { User, Mail, Phone, MapPin, Calendar, Book } from 'lucide-react';
+import { User, Mail, Calendar, Book } from 'lucide-react';
 
 const StudentProfile = () => {
   const studentInfo = {
     name: 'Ravi Kumar Sharma',
     email: 'ravi.sharma@jntugv.ac.in',
     rollNumber: 'CSE2024001',
-    phone: '+91 98765 43210',
     branch: 'B.Tech',
     department: 'Computer Science & Engineering',
     semester: 'Semester 3-1',
     batch: '2024-2028',
-    section: 'A',
-    address: 'Vizianagaram, Andhra Pradesh',
     dateOfBirth: 'January 15, 2006',
     admissionYear: '2024'
   };
@@ -54,22 +51,6 @@ const StudentProfile = () => {
             </div>
 
             <div className="flex items-start gap-3">
-              <Phone className="h-5 w-5 text-gray-400 mt-1" />
-              <div>
-                <p className="text-xs text-gray-500">Phone Number</p>
-                <p className="text-sm font-medium text-gray-900">{studentInfo.phone}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <MapPin className="h-5 w-5 text-gray-400 mt-1" />
-              <div>
-                <p className="text-xs text-gray-500">Address</p>
-                <p className="text-sm font-medium text-gray-900">{studentInfo.address}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
               <Calendar className="h-5 w-5 text-gray-400 mt-1" />
               <div>
                 <p className="text-xs text-gray-500">Date of Birth</p>
@@ -100,14 +81,6 @@ const StudentProfile = () => {
               <div>
                 <p className="text-xs text-gray-500">Batch</p>
                 <p className="text-sm font-medium text-gray-900">{studentInfo.batch}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <Book className="h-5 w-5 text-gray-400 mt-1" />
-              <div>
-                <p className="text-xs text-gray-500">Section</p>
-                <p className="text-sm font-medium text-gray-900">Section {studentInfo.section}</p>
               </div>
             </div>
           </div>

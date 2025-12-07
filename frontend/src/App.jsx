@@ -34,12 +34,10 @@ function App() {
           <Route path="submissions" element={<MySubmissions />} />
           <Route path="change-password" element={<ChangePassword />} />
           <Route path="help" element={<HelpContact />} />
+          <Route path="semester/:semesterId" element={<SemesterFeedback />} />
+          <Route path="semester/:semesterId/preview" element={<FeedbackPreview />} />
+          <Route path="semester/:semesterId/receipt" element={<FeedbackReceipt />} />
         </Route>
-        
-        {/* Student Feedback Routes (without sidebar) */}
-        <Route path="/student/semester/:semesterId" element={<SemesterFeedback />} />
-        <Route path="/student/semester/:semesterId/preview" element={<FeedbackPreview />} />
-        <Route path="/student/semester/:semesterId/receipt" element={<FeedbackReceipt />} />
         
         {/* Faculty Routes */}
         <Route path="/faculty/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white"><div className="text-center"><h1 className="text-2xl font-bold">Faculty Dashboard</h1><p className="text-sm text-gray-600 mt-2">Coming Soon...</p></div></div>} />

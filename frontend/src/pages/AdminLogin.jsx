@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Building2, Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import PublicNavbar from '../components/common/PublicNavbar';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -19,12 +20,10 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
-        <button onClick={() => navigate('/')} className="flex items-center text-sm text-gray-600 hover:text-gray-900 mb-6 transition-colors">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Home
-        </button>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100">
+      <PublicNavbar />
+      <div className="flex items-center justify-center p-4 pt-8">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
 
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
@@ -73,6 +72,7 @@ const AdminLogin = () => {
           </p>
         </div>
       </motion.div>
+    </div>
     </div>
   );
 };

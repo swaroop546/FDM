@@ -4,6 +4,7 @@ import {
   GraduationCap, User, UserCheck, Building2, ArrowRight, Star,
   TrendingUp, Award, CheckCircle, BarChart3, MessageSquare
 } from 'lucide-react';
+import PublicNavbar from '../components/common/PublicNavbar';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -52,20 +53,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <motion.header initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white/90 shadow-sm sticky top-0 z-50 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3 h-10">
-            {/* <div className="w-10 h-10 bg-gradient-to-br from-fdm-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <BarChart3 className="h-6 w-6 text-white" />
-            </div> */}
-            <img src="./jntu.png" className='h-14 w-14'/> 
-            <div>
-              <h1 className="text-lg font-bold">FDM Portal</h1>
-              <p className="text-xs text-gray-500">Feedback Management System</p>
-            </div>
-          </div>
-        </div>
-      </motion.header>
+      <PublicNavbar />
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">

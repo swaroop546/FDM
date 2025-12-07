@@ -2,15 +2,21 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
+import PublicNavbar from '../components/common/PublicNavbar';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [rollNumber, setRollNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email || !rollNumber) {
+      alert('Please enter both your email and roll number.');
+      return;
+    }
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -20,6 +26,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 flex items-center justify-center p-4">
+      <PublicNavbar/>
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
         <button onClick={() => navigate('/login/student')} className="flex items-center text-sm text-gray-600 hover:text-gray-900 mb-6 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -34,7 +41,7 @@ const ForgotPassword = () => {
                   <Mail className="h-8 w-8 text-blue-600" />
                 </div>
                 <h2 className="text-2xl font-bold">Forgot Password?</h2>
-                <p className="text-sm text-gray-600 mt-2">Enter your email to receive a password reset link</p>
+                <p className="text-sm text-gray-600 mt-2">Enter your email and roll number to receive a password reset link</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -48,6 +55,19 @@ const ForgotPassword = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       className="w-full pl-11 pr-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="student@university.edu"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Roll Number</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={rollNumber}
+                      onChange={(e) => setRollNumber(e.target.value)}
+                      className="w-full pl-4 pr-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="CSE2024001"
                       required
                     />
                   </div>
@@ -69,7 +89,7 @@ const ForgotPassword = () => {
               </div>
               <h2 className="text-2xl font-bold mb-2">Email Sent!</h2>
               <p className="text-sm text-gray-600 mb-6">
-                We've sent a password reset link to <span className="font-medium text-gray-900">{email}</span>
+                We've sent a password reset link to <span className="font-medium text-gray-900">{email}</span> for roll number <span className="font-medium text-gray-900">{rollNumber}</span>
               </p>
               <p className="text-xs text-gray-500 mb-6">
                 Please check your email and follow the instructions to reset your password.

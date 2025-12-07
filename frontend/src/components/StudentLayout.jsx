@@ -1,3 +1,4 @@
+
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
@@ -5,11 +6,14 @@ import {
   LayoutDashboard, User, FileText, Lock, HelpCircle, LogOut, 
   ChevronLeft, ChevronRight, Calendar, BookOpen, Award, CheckCircle 
 } from 'lucide-react';
+import jntugvLogo from '../assets/jntugv_logo.jpg';
 
 const StudentLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/student/dashboard' },
@@ -22,26 +26,82 @@ const StudentLayout = () => {
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      navigate('/');
-    }
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
+    navigate('/');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex">
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6"
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <LogOut className="w-8 h-8 text-yellow-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Confirm Logout</h3>
+              <p className="text-sm text-gray-600 mb-6">
+                Are you sure you want to logout? You will need to login again to access your account.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className="flex-1 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmLogout}
+                  className="flex-1 py-3 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Hamburger Button */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-900 text-white rounded-lg shadow-lg"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
       {/* Sidebar */}
-      <motion.aside
-        initial={false}
-        animate={{ width: sidebarCollapsed ? '80px' : '240px' }}
-        className="bg-gray-900 text-white flex flex-col fixed h-screen z-50"
+      <aside
+        className={`bg-gray-900 text-white flex flex-col fixed h-screen z-50 transition-all duration-300 ${
+          sidebarCollapsed ? 'w-20' : 'w-60'
+        } ${
+          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0`}
       >
         {/* Header */}
         <div className="p-4 flex items-center justify-between border-b border-gray-800">
           {!sidebarCollapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-sm font-bold">JG</span>
-              </div>
+              <img src={jntugvLogo} alt="JNTUGV Logo" className="w-8 h-8 rounded-lg object-contain bg-white border border-gray-200" />
               <div>
                 <h2 className="text-xs font-bold">JNTUGV Feedback Portal</h2>
                 <p className="text-xs text-gray-400">Student Portal</p>
@@ -61,7 +121,10 @@ const StudentLayout = () => {
           {menuItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => navigate(item.path)}
+              onClick={() => {
+                navigate(item.path);
+                setMobileMenuOpen(false);
+              }}
               className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${
                 isActive(item.path)
                   ? 'bg-blue-600 text-white'
@@ -84,10 +147,10 @@ const StudentLayout = () => {
             {!sidebarCollapsed && <span className="text-sm">Logout</span>}
           </button>
         </div>
-      </motion.aside>
+      </aside>
 
       {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-60'}`}>
+      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-60'}`}>
         <Outlet />
       </div>
     </div>
@@ -112,7 +175,7 @@ const StudentDashboardHome = () => {
     { 
       id: 1, 
       semester: 'Semester 3-1', 
-      status: 'closed', 
+      status: 'active', 
       dateRange: 'Nov 1 - Dec 16, 2024',
       submittedDate: null 
     },
@@ -236,6 +299,14 @@ const StudentDashboardHome = () => {
                     <p className="text-xs text-gray-500">Closed</p>
                   )}
                 </div>
+                {session.status === 'active' && (
+                  <button
+                    onClick={() => navigate(`/student/semester/${session.id}`)}
+                    className="w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all"
+                  >
+                    Start Feedback →
+                  </button>
+                )}
                 {session.status === 'submitted' && (
                   <button
                     onClick={() => navigate(`/student/semester/${session.id}/receipt`)}
