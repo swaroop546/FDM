@@ -1,8 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import StudentDashboard from './pages/student/StudentDashboard';
-import FeedbackForm from './pages/student/FeedbackForm';
-import ViewSubmission from './pages/student/ViewSubmission';
+import StudentLogin from './pages/StudentLogin';
+import FacultyLogin from './pages/FacultyLogin';
+import HODLogin from './pages/HODLogin';
+import AdminLogin from './pages/AdminLogin';
+import ForgotPassword from './pages/ForgotPassword';
+import { StudentLayout, StudentDashboardHome } from './components/StudentLayout';
+import StudentProfile from './pages/StudentProfile';
+import MySubmissions from './pages/MySubmissions';
+import ChangePassword from './pages/ChangePassword';
+import HelpContact from './pages/HelpContact';
+import SemesterFeedback from './pages/SemesterFeedback';
+import FeedbackPreview from './pages/FeedbackPreview';
+import FeedbackReceipt from './pages/FeedbackReceipt';
 
 function App() {
   return (
@@ -11,16 +21,34 @@ function App() {
         {/* Landing Page */}
         <Route path="/" element={<LandingPage />} />
         
-        {/* Student Routes */}
-        <Route path="/student/dashboard" element={<StudentDashboard />} />
-        <Route path="/student/feedback/:mapId" element={<FeedbackForm />} />
-        <Route path="/student/submission/:mapId" element={<ViewSubmission />} />
+        {/* Login Routes */}
+        <Route path="/login/student" element={<StudentLogin />} />
+        <Route path="/login/hod" element={<HODLogin />} />
+        <Route path="/login/admin" element={<AdminLogin />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         
-        {/* HOD Routes (to be implemented) */}
-        <Route path="/hod/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gray-100"><div className="text-center"><h1 className="text-3xl font-bold text-gray-800">HOD Dashboard</h1><p className="text-gray-600 mt-2">Coming Soon...</p></div></div>} />
+        {/* Student Routes with Sidebar Layout */}
+        <Route path="/student" element={<StudentLayout />}>
+          <Route path="dashboard" element={<StudentDashboardHome />} />
+          <Route path="profile" element={<StudentProfile />} />
+          <Route path="submissions" element={<MySubmissions />} />
+          <Route path="change-password" element={<ChangePassword />} />
+          <Route path="help" element={<HelpContact />} />
+        </Route>
         
-        {/* Admin Routes (to be implemented) */}
-        <Route path="/admin/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gray-100"><div className="text-center"><h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1><p className="text-gray-600 mt-2">Coming Soon...</p></div></div>} />
+        {/* Student Feedback Routes (without sidebar) */}
+        <Route path="/student/semester/:semesterId" element={<SemesterFeedback />} />
+        <Route path="/student/semester/:semesterId/preview" element={<FeedbackPreview />} />
+        <Route path="/student/semester/:semesterId/receipt" element={<FeedbackReceipt />} />
+        
+        {/* Faculty Routes */}
+        <Route path="/faculty/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white"><div className="text-center"><h1 className="text-2xl font-bold">Faculty Dashboard</h1><p className="text-sm text-gray-600 mt-2">Coming Soon...</p></div></div>} />
+        
+        {/* HOD Routes */}
+        <Route path="/hod/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-white"><div className="text-center"><h1 className="text-2xl font-bold">HOD Dashboard</h1><p className="text-sm text-gray-600 mt-2">Coming Soon...</p></div></div>} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin/dashboard" element={<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-white"><div className="text-center"><h1 className="text-2xl font-bold">Admin Dashboard</h1><p className="text-sm text-gray-600 mt-2">Coming Soon...</p></div></div>} />
       </Routes>
     </Router>
   );
