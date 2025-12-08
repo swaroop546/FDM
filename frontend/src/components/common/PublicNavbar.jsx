@@ -35,7 +35,7 @@ const PublicNavbar = () => {
                 <img src={jntugvLogo} alt="JNTUGV Logo" className="w-12 h-12 rounded-lg object-contain bg-white border border-gray-200" />
               </button>
               <div className="ml-3 min-w-0 flex items-center">
-                <h2 className="text-[8px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base font-bold text-red-600 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                <h2 className="text-[8px] xs:text-[10px] sm:text-xs md:text-sm lg:text-base font-bold text-violet-900 leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                   JAWAHARLAL NEHRU TECHNOLOGICAL UNIVERSITY GURAJADA VIZIANAGARAM
                 </h2>
               </div>

@@ -120,8 +120,8 @@ const HODHelp = () => {
         >
           <div className="bg-white rounded-xl border-2 border-gray-200 p-6 mb-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <HelpCircle className="h-5 w-5 text-emerald-600" />
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <HelpCircle className="h-5 w-5 text-blue-600" />
               </div>
               <h2 className="text-lg font-bold text-gray-900">Contact Support</h2>
             </div>
@@ -174,19 +174,19 @@ const HODHelp = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-6">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-6">
             <h3 className="text-sm font-bold text-gray-900 mb-4">Quick Links</h3>
             <div className="space-y-2">
-              <a href="#" className="block text-sm text-emerald-700 hover:text-emerald-900 hover:underline">
+              <a href="#" className="block text-sm text-blue-700 hover:text-blue-900 hover:underline">
                 User Manual (PDF)
               </a>
-              <a href="#" className="block text-sm text-emerald-700 hover:text-emerald-900 hover:underline">
+              <a href="#" className="block text-sm text-blue-700 hover:text-blue-900 hover:underline">
                 Video Tutorials
               </a>
-              <a href="#" className="block text-sm text-emerald-700 hover:text-emerald-900 hover:underline">
+              <a href="#" className="block text-sm text-blue-700 hover:text-blue-900 hover:underline">
                 System Status
               </a>
-              <a href="#" className="block text-sm text-emerald-700 hover:text-emerald-900 hover:underline">
+              <a href="#" className="block text-sm text-blue-700 hover:text-blue-900 hover:underline">
                 Report a Bug
               </a>
             </div>
@@ -238,7 +238,7 @@ const HODHelp = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
                   <option value="">Select a category</option>
@@ -258,7 +258,7 @@ const HODHelp = () => {
                   name="subject"
                   value={formData.subject}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Brief description of your issue"
                   required
                 />
@@ -273,7 +273,7 @@ const HODHelp = () => {
                   name="priority"
                   value={formData.priority}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="low">Low - General inquiry</option>
                   <option value="normal">Normal - Standard issue</option>
@@ -291,7 +291,7 @@ const HODHelp = () => {
                   value={formData.message}
                   onChange={handleInputChange}
                   rows="6"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   placeholder="Describe your issue in detail..."
                   required
                 />
@@ -300,7 +300,7 @@ const HODHelp = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
               >
                 <Send className="h-4 w-4" />
                 {isSubmitting ? 'Submitting...' : 'Submit Request'}

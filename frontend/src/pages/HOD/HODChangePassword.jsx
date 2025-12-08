@@ -140,7 +140,7 @@ const HODChangePassword = () => {
       >
         <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg p-6 sm:p-8">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Lock className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Change Password</h1>
@@ -182,7 +182,7 @@ const HODChangePassword = () => {
                   name="currentPassword"
                   value={formData.currentPassword}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                     errors.currentPassword ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Enter current password"
@@ -212,7 +212,7 @@ const HODChangePassword = () => {
                   name="newPassword"
                   value={formData.newPassword}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                     errors.newPassword ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Enter new password"
@@ -274,7 +274,7 @@ const HODChangePassword = () => {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                     errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Confirm new password"
@@ -296,7 +296,7 @@ const HODChangePassword = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
               {isLoading ? 'Changing Password...' : 'Change Password'}
             </button>
@@ -304,7 +304,7 @@ const HODChangePassword = () => {
             <button
               type="button"
               onClick={() => navigate('/hod/dashboard')}
-              className="w-full py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:border-emerald-500 hover:text-emerald-600 transition-all font-medium"
+              className="w-full py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-all font-medium"
             >
               Cancel
             </button>

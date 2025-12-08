@@ -1,12 +1,17 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { Send, Edit, CheckCircle, MapPin, Star } from 'lucide-react';
+import { Send, Edit, CheckCircle, MapPin, Star, AlertCircle, X } from 'lucide-react';
 
 const FeedbackPreview = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { semesterId } = useParams();
   const { feedbackData } = location.state || { feedbackData: [] };
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState(''); // 'incomplete', 'confirm', 'success'
+  const [incompleteCount, setIncompleteCount] = useState(0);
 
   const questions = [
     "How would you rate the faculty's teaching effectiveness?",
@@ -54,17 +59,25 @@ const FeedbackPreview = () => {
 
   const handleSubmit = () => {
     if (!isComplete) {
-      alert(
-        'Please complete all feedback before submitting. You have ' +
-          (totalCount - completedCount) +
-          ' unanswered questions.'
-      );
+      setIncompleteCount(totalCount - completedCount);
+      setModalType('incomplete');
+      setShowModal(true);
       return;
     }
-    if (window.confirm('Are you sure you want to submit your feedback? This action cannot be undone.')) {
-      alert('Feedback submitted successfully!');
-      navigate('/student/dashboard');
-    }
+    setModalType('confirm');
+    setShowModal(true);
+  };
+
+  const handleConfirmSubmit = () => {
+    setShowModal(false);
+    setTimeout(() => {
+      setModalType('success');
+      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+        navigate('/student/dashboard');
+      }, 2000);
+    }, 300);
   };
 
   // Calculate analytics
@@ -204,7 +217,7 @@ const FeedbackPreview = () => {
         </motion.div>
 
         {/* Timeline map of feedback */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
@@ -222,7 +235,7 @@ const FeedbackPreview = () => {
           </div>
 
           <div className="relative">
-            {/* vertical line */}
+            
             <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-gray-200 via-gray-300 to-gray-100 pointer-events-none" />
 
             <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-1">
@@ -237,7 +250,7 @@ const FeedbackPreview = () => {
                     transition={{ delay: index * 0.01 }}
                     className="flex gap-4"
                   >
-                    {/* marker */}
+                   
                     <div className="flex flex-col items-center pt-1">
                       <div
                         className={`relative flex items-center justify-center w-8 h-8 rounded-full border-2 ${
@@ -260,7 +273,7 @@ const FeedbackPreview = () => {
                       )}
                     </div>
 
-                    {/* card */}
+                
                     <div className="flex-1">
                       <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 hover:border-gray-300 hover:shadow-sm transition-all">
                         <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
@@ -300,7 +313,7 @@ const FeedbackPreview = () => {
               })}
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Analytics Section */}
         <motion.div
@@ -400,6 +413,120 @@ const FeedbackPreview = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Custom Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+            >
+              {/* Incomplete Feedback Modal */}
+              {modalType === 'incomplete' && (
+                <>
+                  <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <AlertCircle className="h-6 w-6 text-orange-600" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">Incomplete Feedback</h3>
+                    </div>
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition-colors"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-gray-700 text-sm mb-4">
+                      Please complete all feedback before submitting. You still have{' '}
+                      <span className="font-bold text-orange-600">{incompleteCount} unanswered questions</span>.
+                    </p>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="flex-1 px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                      >
+                        Continue Editing
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Confirmation Modal */}
+              {modalType === 'confirm' && (
+                <>
+                  <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <Send className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">Confirm Submission</h3>
+                    </div>
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition-colors"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-gray-700 text-sm mb-6">
+                      Are you sure you want to submit your feedback?{' '}
+                      <span className="font-semibold text-red-600">This action cannot be undone.</span>
+                    </p>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="flex-1 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleConfirmSubmit}
+                        className="flex-1 px-4 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                      >
+                        Yes, Submit
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Success Modal */}
+              {modalType === 'success' && (
+                <>
+                  <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">Success!</h3>
+                    </div>
+                  </div>
+                  <div className="p-6 text-center">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="h-10 w-10 text-green-600" />
+                    </div>
+                    <p className="text-gray-700 text-sm font-medium">
+                      Feedback submitted successfully!
+                    </p>
+                    <p className="text-gray-600 text-xs mt-2">
+                      Redirecting to dashboard...
+                    </p>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

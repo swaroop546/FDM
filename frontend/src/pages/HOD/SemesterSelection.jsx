@@ -80,11 +80,11 @@ const SemesterSelection = () => {
 
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-6 overflow-x-auto">
-        <button onClick={() => navigate('/hod/dashboard')} className="hover:text-emerald-600 whitespace-nowrap">
+        <button onClick={() => navigate('/hod/dashboard')} className="hover:text-blue-600 whitespace-nowrap">
           Dashboard
         </button>
         <ChevronRight className="h-4 w-4 flex-shrink-0" />
-        <button onClick={() => navigate('/hod/feedback-management')} className="hover:text-emerald-600 whitespace-nowrap">
+        <button onClick={() => navigate('/hod/feedback-management')} className="hover:text-blue-600 whitespace-nowrap">
           Feedback Management
         </button>
         <ChevronRight className="h-4 w-4 flex-shrink-0" />
@@ -92,11 +92,11 @@ const SemesterSelection = () => {
         <ChevronRight className="h-4 w-4 flex-shrink-0" />
         <span className="whitespace-nowrap">{regulation}</span>
         <ChevronRight className="h-4 w-4 flex-shrink-0" />
-        <span className="font-medium text-emerald-600 whitespace-nowrap">Semester Selection</span>
+        <span className="font-medium text-blue-600 whitespace-nowrap">Semester Selection</span>
       </div>
 
       {/* Batch & Regulation Info */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 sm:p-6 mb-6">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6 mb-6">
         <div className="flex flex-wrap gap-4">
           <div>
             <p className="text-xs text-gray-600">Batch</p>
@@ -116,7 +116,7 @@ const SemesterSelection = () => {
       {/* Semesters Grid */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
         <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-emerald-600" />
+          <Calendar className="h-5 w-5 text-blue-600" />
           Available Semesters (Year {batch.year})
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -132,11 +132,11 @@ const SemesterSelection = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => handleSemesterClick(semester)}
-                className="bg-white rounded-xl border-2 border-gray-200 hover:border-emerald-500 p-6 text-left transition-all hover:shadow-lg group"
+                className="bg-white rounded-xl border-2 border-gray-200 hover:border-blue-500 p-6 text-left transition-all hover:shadow-lg group"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                    <Calendar className="h-6 w-6 text-emerald-600" />
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <Calendar className="h-6 w-6 text-blue-600" />
                   </div>
                   <div className={`flex items-center gap-2 px-3 py-1 ${statusConfig.bgColor} ${statusConfig.textColor} rounded-full text-xs font-medium border ${statusConfig.borderColor}`}>
                     <StatusIcon className="h-3 w-3" />
@@ -144,7 +144,7 @@ const SemesterSelection = () => {
                   </div>
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{semester.name}</h3>
-                <div className="flex items-center gap-2 text-sm text-emerald-600 font-medium">
+                <div className="flex items-center gap-2 text-sm text-blue-600 font-medium">
                   <Play className="h-4 w-4" />
                   Manage Feedback
                 </div>

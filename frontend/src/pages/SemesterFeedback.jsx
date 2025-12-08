@@ -70,6 +70,15 @@ const SemesterFeedback = () => {
     navigate(`/student/semester/${semesterId}/preview`, { state: { feedbackData } });
   };
 
+  const handleDemoFill = () => {
+    setFeedbackData(prev => 
+      prev.map(item => ({
+        ...item,
+        rating: Math.floor(Math.random() * 5) + 1 // Random rating between 1-5
+      }))
+    );
+  };
+
   const RatingRow = ({ item }) => (
     <tr className="hover:bg-gray-50 transition-colors">
       <td className="py-4 px-6">
@@ -124,15 +133,10 @@ const SemesterFeedback = () => {
   const [expandedQuestions, setExpandedQuestions] = useState({});
 
   const toggleQuestion = (questionIndex) => {
-    setExpandedQuestions(prev => {
-      const isCurrentlyExpanded = prev[questionIndex];
-      // If clicking same question, toggle it. Otherwise, open the new one and close others
-      if (isCurrentlyExpanded) {
-        return {}; // Close current question
-      } else {
-        return { [questionIndex]: true }; // Open new question, close all others
-      }
-    });
+    setExpandedQuestions(prev => ({
+      ...prev,
+      [questionIndex]: !prev[questionIndex]
+    }));
   };
 
   const QuestionCard = ({ questionIndex }) => {
@@ -145,46 +149,46 @@ const SemesterFeedback = () => {
     };
     
     return (
-      <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
+      <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200 h-fit">
         <button
           type="button"
           onClick={handleToggle}
-          className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 hover:from-teal-600 hover:to-cyan-600 transition-all"
+          className="w-full bg-blue-600 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 hover:bg-blue-700 transition-all"
         >
-          <div className="flex items-start gap-3 flex-1 text-left pointer-events-none">
-            <span className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-white text-teal-600 rounded-full flex items-center justify-center font-bold text-sm sm:text-base">
+          <div className="flex items-start gap-2 flex-1 text-left pointer-events-none">
+            <span className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 bg-white text-blue-600 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm">
               {questionIndex + 1}
             </span>
-            <h3 className="text-white font-semibold text-xs sm:text-sm md:text-base flex-1">{questions[questionIndex]}</h3>
+            <h3 className="text-white font-semibold text-xs sm:text-sm flex-1 leading-snug">{questions[questionIndex]}</h3>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0 pointer-events-none">
-            <span className={`text-xs font-bold px-2 py-1 rounded ${filledCount === questionData.length ? 'bg-green-400 text-gray-900' : 'bg-yellow-400 text-gray-900'}`}>
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pointer-events-none">
+            <span className={`text-xs font-bold px-2 py-0.5 rounded ${filledCount === questionData.length ? 'bg-green-400 text-gray-900' : 'bg-yellow-400 text-gray-900'}`}>
               {filledCount}/10
             </span>
-            <ChevronDown className={`h-5 w-5 text-white transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`h-4 w-4 text-white transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           </div>
         </button>
         
         {isExpanded && (
-          <div className="p-3 sm:p-4 md:p-6">
-            <div className="mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-gray-200">
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
-                <span className="font-semibold text-gray-700">Rating Scale:</span>
-                <span className="text-red-600 font-medium">1 - Poor</span>
-                <span className="text-orange-500 font-medium">2 - Fair</span>
-                <span className="text-yellow-500 font-medium">3 - Average</span>
-                <span className="text-blue-500 font-medium">4 - Good</span>
-                <span className="text-green-600 font-medium">5 - Excellent</span>
+          <div className="p-2 sm:p-3">
+            <div className="mb-2 pb-2 border-b border-gray-200">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs">
+                <span className="font-semibold text-gray-700">Scale:</span>
+                <span className="text-red-600 font-medium">1-Poor</span>
+                <span className="text-orange-500 font-medium">2-Fair</span>
+                <span className="text-yellow-500 font-medium">3-Avg</span>
+                <span className="text-blue-500 font-medium">4-Good</span>
+                <span className="text-green-600 font-medium">5-Excellent</span>
               </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-1">
               {questionData.map(item => (
-                <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 p-1.5 rounded-lg hover:bg-gray-50 border border-gray-100">
                   <div className="flex-1 min-w-0 w-full sm:w-auto">
-                    <div className="font-medium text-sm text-gray-900">{item.facultyName}</div>
-                    <div className="text-xs text-gray-600 mt-0.5">{item.subject}</div>
+                    <div className="font-medium text-[11px] text-gray-900">{item.facultyName}</div>
+                    <div className="text-[9px] text-gray-600">{item.subject}</div>
                   </div>
-                  <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 w-full sm:w-auto">
+                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto">
                     {[1, 2, 3, 4, 5].map(rating => (
                         <label key={rating} className="flex items-center cursor-pointer group">
                           <input
@@ -193,9 +197,9 @@ const SemesterFeedback = () => {
                             value={rating}
                             checked={item.rating === rating}
                             onChange={() => handleRatingChange(item.id, rating)}
-                            className="w-4 h-4 text-teal-600 cursor-pointer"
+                            className="w-3 h-3 text-blue-600 cursor-pointer"
                           />
-                          <span className="ml-1 sm:ml-1.5 text-sm text-gray-700 group-hover:text-teal-600 font-medium">{rating}</span>
+                          <span className="ml-0.5 text-[11px] text-gray-700 group-hover:text-blue-600 font-medium">{rating}</span>
                       </label>
                     ))}
                   </div>
@@ -218,15 +222,15 @@ const SemesterFeedback = () => {
               <Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
             <ChevronRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gray-400 shrink-0" />
-            <button onClick={() => navigate('/student/dashboard')} className="text-gray-600 hover:text-teal-600 transition-colors whitespace-nowrap">
+            <button onClick={() => navigate('/student/dashboard')} className="text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap">
               Dashboard
             </button>
             <ChevronRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gray-400 shrink-0" />
             <span className="text-gray-600 whitespace-nowrap">Semester {semesterId}</span>
             <ChevronRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gray-400 shrink-0" />
-            <span className="font-medium text-teal-600 whitespace-nowrap">Page {currentPage}</span>
+            <span className="font-medium text-blue-600 whitespace-nowrap">Page {currentPage}</span>
           </div>
-          <button onClick={() => navigate('/student/dashboard')} className="text-xs sm:text-sm text-teal-600 hover:text-teal-700 font-medium whitespace-nowrap ml-2">
+          <button onClick={() => navigate('/student/dashboard')} className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap ml-2">
             Back
           </button>
         </div>
@@ -234,13 +238,21 @@ const SemesterFeedback = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">SEMESTER {semesterId} FEEDBACK</h1>
-          <p className="text-xs sm:text-sm text-gray-600 mt-1">Page {currentPage} of {totalPages}</p>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">SEMESTER {semesterId} FEEDBACK</h1>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">Page {currentPage} of {totalPages}</p>
+          </div>
+          <button
+            onClick={handleDemoFill}
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm font-medium rounded-lg transition-colors shadow-md"
+          >
+            🎲 Demo Fill
+          </button>
         </motion.div>
 
-        {/* Feedback Questions */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="space-y-4 sm:space-y-6">
+        {/* Feedback Questions - 2 Column Grid */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {getQuestionsForPage(currentPage).map(qIndex => (
             <QuestionCard key={qIndex} questionIndex={qIndex} />
           ))}
@@ -267,7 +279,7 @@ const SemesterFeedback = () => {
                 }}
                 className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   currentPage === i + 1
-                    ? 'bg-teal-600 text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -279,7 +291,7 @@ const SemesterFeedback = () => {
           {currentPage < totalPages ? (
             <button
               onClick={handleNextPage}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 text-xs sm:text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Next
               <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -303,7 +315,7 @@ const SemesterFeedback = () => {
           </div>
           <div className="h-2 sm:h-2.5 bg-gray-200 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 transition-all duration-300"
+              className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-300"
               style={{ width: `${(currentPage / totalPages) * 100}%` }}
             />
           </div>

@@ -6,7 +6,7 @@ const HODDashboard = () => {
   const navigate = useNavigate();
 
   const hodInfo = {
-    name: 'Dr. Ramesh Kumar',
+    name: 'Dr. P. Aruna Kumari',
     email: 'hodcse@jntugvcev.edu.in',
     department: 'Computer Science & Engineering',
     program: 'B.Tech',

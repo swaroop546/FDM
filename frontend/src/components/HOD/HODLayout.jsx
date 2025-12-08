@@ -43,7 +43,7 @@ const HODLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex">
       {/* Logout Modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
@@ -90,7 +90,7 @@ const HODLayout = () => {
       {/* Mobile Hamburger Button */}
       <button
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-emerald-900 text-white rounded-lg shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-blue-900 text-white rounded-lg shadow-lg"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -99,26 +99,26 @@ const HODLayout = () => {
 
       {/* Sidebar */}
       <aside
-        className={`bg-emerald-900 text-white flex flex-col fixed h-screen z-50 transition-all duration-300 ${
+        className={`bg-gray-800 text-white flex flex-col fixed h-screen z-50 transition-all duration-300 ${
           sidebarCollapsed ? 'w-20' : 'w-60'
         } ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0`}
       >
         {/* Header */}
-        <div className="p-4 flex items-center justify-between border-b border-emerald-800">
+        <div className="p-4 flex items-center justify-between border-b border-gray-800">
           {!sidebarCollapsed && (
             <div className="flex items-center gap-2">
               <img src={jntugvLogo} alt="JNTUGV Logo" className="w-8 h-8 rounded-lg object-contain bg-white border border-gray-200" />
               <div>
                 <h2 className="text-xs font-bold">JNTUGV Feedback Portal</h2>
-                <p className="text-xs text-emerald-300">HOD Portal</p>
+                <p className="text-xs text-blue-300">HOD Portal</p>
               </div>
             </div>
           )}
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="text-emerald-300 hover:text-white transition-colors"
+            className="text-blue-300 hover:text-white transition-colors"
           >
             {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
           </button>
@@ -135,8 +135,8 @@ const HODLayout = () => {
               }}
               className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${
                 isActive(item.path)
-                  ? 'bg-emerald-700 text-white'
-                  : 'text-emerald-100 hover:bg-emerald-800 hover:text-white'
+                  ? 'bg-blue-700 text-white'
+                  : 'text-blue-100 hover:bg-blue-800 hover:text-white'
               }`}
             >
               <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -146,10 +146,10 @@ const HODLayout = () => {
         </nav>
 
         {/* Logout */}
-        <div className="border-t border-emerald-800 p-4">
+        <div className="border-t border-blue-800 p-4">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-emerald-100 hover:bg-red-600 hover:text-white rounded-lg transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 text-blue-100 hover:bg-red-600 hover:text-white rounded-lg transition-colors"
           >
             <LogOut className="h-5 w-5 flex-shrink-0" />
             {!sidebarCollapsed && <span className="text-sm">Logout</span>}

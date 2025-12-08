@@ -127,8 +127,8 @@ const TimetableView = () => {
             className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6"
           >
             <div className="text-center">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Send className="w-8 h-8 text-emerald-600" />
+              <div className="w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <Send className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Publish Feedback Form</h3>
               <p className="text-sm text-gray-600 mb-6">
@@ -143,7 +143,7 @@ const TimetableView = () => {
                 </button>
                 <button
                   onClick={handlePublish}
-                  className="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
+                  className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
                 >
                   Publish
                 </button>
@@ -161,19 +161,19 @@ const TimetableView = () => {
 
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-6 overflow-x-auto">
-        <button onClick={() => navigate('/hod/dashboard')} className="hover:text-emerald-600 whitespace-nowrap">
+        <button onClick={() => navigate('/hod/dashboard')} className="hover:text-blue-600 whitespace-nowrap">
           Dashboard
         </button>
         <ChevronRight className="h-4 w-4 flex-shrink-0" />
-        <button onClick={() => navigate('/hod/feedback-management')} className="hover:text-emerald-600 whitespace-nowrap">
+        <button onClick={() => navigate('/hod/feedback-management')} className="hover:text-blue-600 whitespace-nowrap">
           Feedback Management
         </button>
         <ChevronRight className="h-4 w-4 flex-shrink-0" />
-        <span className="font-medium text-emerald-600 whitespace-nowrap">Timetable</span>
+        <span className="font-medium text-blue-600 whitespace-nowrap">Timetable</span>
       </div>
 
       {/* Info Card */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 sm:p-6 mb-6">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6 mb-6">
         <div className="flex flex-wrap gap-4 sm:gap-6">
           <div>
             <p className="text-xs text-gray-600">Batch</p>
@@ -214,7 +214,7 @@ const TimetableView = () => {
         <div className="hidden md:block bg-white rounded-xl shadow-lg overflow-hidden mb-6">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-emerald-600 text-white">
+              <thead className="bg-blue-600 text-white">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold">Subject Code</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold">Subject Name</th>
@@ -275,7 +275,7 @@ const TimetableView = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center">
             <button
               onClick={() => setShowPublishModal(true)}
-              className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
             >
               <Send className="h-5 w-5" />
               Publish Feedback Form

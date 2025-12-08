@@ -58,7 +58,7 @@ const FeedbackManagement = () => {
       <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-6 overflow-x-auto">
         <span className="whitespace-nowrap">Dashboard</span>
         <ChevronRight className="h-4 w-4 flex-shrink-0" />
-        <span className="font-medium text-emerald-600 whitespace-nowrap">Feedback Management</span>
+        <span className="font-medium text-blue-600 whitespace-nowrap">Feedback Management</span>
         {selectedBatch && (
           <>
             <ChevronRight className="h-4 w-4 flex-shrink-0" />
@@ -68,11 +68,11 @@ const FeedbackManagement = () => {
       </div>
 
       {/* Department Info */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 sm:p-6 mb-6">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6 mb-6">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <GraduationCap className="h-6 w-6 text-emerald-600" />
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <GraduationCap className="h-6 w-6 text-blue-600" />
             </div>
             <div>
               <p className="text-xs text-gray-600">Department</p>
@@ -95,7 +95,7 @@ const FeedbackManagement = () => {
       {!selectedBatch && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Users className="h-5 w-5 text-emerald-600" />
+            <Users className="h-5 w-5 text-blue-600" />
             Step 1: Select Batch
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -105,13 +105,13 @@ const FeedbackManagement = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 onClick={() => handleBatchSelect(batch)}
-                className="bg-white rounded-xl border-2 border-gray-200 hover:border-emerald-500 p-6 text-left transition-all hover:shadow-lg group"
+                className="bg-white rounded-xl border-2 border-gray-200 hover:border-blue-500 p-6 text-left transition-all hover:shadow-lg group"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                    <Calendar className="h-6 w-6 text-emerald-600" />
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <Calendar className="h-6 w-6 text-blue-600" />
                   </div>
-                  <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
+                  <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
                     Year {batch.year}
                   </span>
                 </div>
@@ -130,12 +130,12 @@ const FeedbackManagement = () => {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <button
             onClick={() => setSelectedBatch(null)}
-            className="text-sm text-emerald-600 hover:text-emerald-700 mb-4 flex items-center gap-1"
+            className="text-sm text-blue-600 hover:text-blue-700 mb-4 flex items-center gap-1"
           >
             ← Back to Batches
           </button>
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-emerald-600" />
+            <BookOpen className="h-5 w-5 text-blue-600" />
             Step 2: Select Regulation for {selectedBatch.name}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -146,10 +146,10 @@ const FeedbackManagement = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => handleRegulationSelect(reg)}
-                className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border-2 border-emerald-200 hover:border-emerald-500 p-8 text-center transition-all hover:shadow-lg group"
+                className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border-2 border-blue-200 hover:border-blue-500 p-8 text-center transition-all hover:shadow-lg group"
               >
-                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-emerald-200 transition-colors">
-                  <span className="text-2xl font-bold text-emerald-600">{reg}</span>
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
+                  <span className="text-2xl font-bold text-blue-600">{reg}</span>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">Regulation {reg}</h3>
               </motion.button>
