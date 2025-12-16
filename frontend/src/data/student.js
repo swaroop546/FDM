@@ -1,14 +1,25 @@
 export const programs = [
-    { id: 1, name: 'B.Tech' },
-    { id: 2, name: 'M.Tech' },
-    { id: 3, name: 'MBA' }
+    { id: 1, name: 'B.Tech', duration: 4 },
+    { id: 2, name: 'M.Tech', duration: 2 },
+    { id: 3, name: 'MBA', duration: 2 }
 ];
 
 export const branches = [
-    { id: 1, name: 'CSE', specialization: 'Computer Science and Engineering', programId: 1 },
-    { id: 2, name: 'ECE', specialization: 'Electronics and Communication Engineering', programId: 1 },
-    { id: 3, name: 'ME', specialization: 'Mechanical Engineering', programId: 1 },
-    { id: 4, name: 'CSE-AI', specialization: 'Artificial Intelligence', programId: 2 }
+    { id: 1, name: 'CSE', code: '05', specialization: 'Computer Science and Engineering', programId: 1 },
+    { id: 2, name: 'ECE', code: '04', specialization: 'Electronics and Communication Engineering', programId: 1 },
+    { id: 3, name: 'ME', code: '03', specialization: 'Mechanical Engineering', programId: 1 },
+    { id: 4, name: 'CSE-AI', code: '67', specialization: 'Artificial Intelligence', programId: 2 }
+];
+
+export const batches = [
+    { id: 1, name: '2021-2025', startYear: 2021, endYear: 2025, regulation: 'R20' },
+    { id: 2, name: '2022-2026', startYear: 2022, endYear: 2026, regulation: 'R20' },
+    { id: 3, name: '2023-2027', startYear: 2023, endYear: 2027, regulation: 'R23' }
+];
+
+export const hods = [
+    { id: 1, name: 'Dr. HOD CSE', email: 'hod_cse@college.edu', branchId: 1, designation: 'Professor & HOD' },
+    { id: 2, name: 'Dr. HOD ECE', email: 'hod_ece@college.edu', branchId: 2, designation: 'Professor & HOD' }
 ];
 
 export const students = [
@@ -18,6 +29,7 @@ export const students = [
         name: 'John Doe',
         programId: 1,
         branchId: 1,
+        batchId: 1, // Mapped to batches array
         batch: '2021-2025',
         regulation: 'R20',
         currentYear: 4,
@@ -31,6 +43,7 @@ export const students = [
         name: 'Jane Smith',
         programId: 1,
         branchId: 1,
+        batchId: 1,
         batch: '2021-2025',
         regulation: 'R20',
         currentYear: 4,
@@ -44,6 +57,7 @@ export const students = [
         name: 'Robert Brown',
         programId: 1,
         branchId: 2,
+        batchId: 1,
         batch: '2021-2025',
         regulation: 'R20',
         currentYear: 4,
@@ -57,6 +71,7 @@ export const students = [
         name: 'Alice Johnson',
         programId: 1,
         branchId: 1,
+        batchId: 2,
         batch: '2022-2026',
         regulation: 'R20',
         currentYear: 3,
