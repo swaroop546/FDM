@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Building2, Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import PublicNavbar from '../components/common/PublicNavbar';
 
+import { useAuth } from '../context/AuthContext';
+
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -13,7 +16,14 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    // Simulate API call
     setTimeout(() => {
+      // Set the user in the context
+      login({ 
+        email: formData.email, 
+        role: 'admin', 
+        name: 'Administrator' 
+      });
       setLoading(false);
       navigate('/admin/dashboard');
     }, 1500);
