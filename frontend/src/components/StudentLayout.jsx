@@ -162,13 +162,13 @@ const StudentDashboardHome = () => {
 
   // Sample student data
   const studentInfo = {
-    name: 'Ravi Kumar Sharma',
-    email: 'ravi.sharma@jntugv.ac.in',
-    rollNumber: 'CSE2024001',
+    name: 'P. Sneha Swaroop',
+    email: 'swarooppinakana@gmail.com',
+    rollNumber: '23VV1A0546',
     branch: 'B.Tech',
     department: 'Computer Science & Engineering',
     semester: 'Sem 3-1',
-    batch: '2024-2028'
+    batch: '2023-2027'
   };
 
   const feedbackSessions = [

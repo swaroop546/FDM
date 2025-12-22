@@ -3,15 +3,15 @@ import { User, Mail, Calendar, Book } from 'lucide-react';
 
 const StudentProfile = () => {
   const studentInfo = {
-    name: 'Ravi Kumar Sharma',
-    email: 'ravi.sharma@jntugv.ac.in',
-    rollNumber: 'CSE2024001',
+    name: 'P. Sneha Swaroop',
+    email: 'swarooppinakana@gmail.com',
+    rollNumber: '23VV1A0546',
     branch: 'B.Tech',
     department: 'Computer Science & Engineering',
     semester: 'Semester 3-1',
-    batch: '2024-2028',
+    batch: '2023-2027',
     dateOfBirth: 'January 15, 2006',
-    admissionYear: '2024'
+    admissionYear: '2023'
   };
 
   return (
