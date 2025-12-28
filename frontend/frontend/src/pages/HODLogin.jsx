@@ -66,6 +66,10 @@ const HODLogin = () => {
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
+
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Need help? <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">Contact Support</a>
+          </p>
         </div>
       </motion.div>
     </div>

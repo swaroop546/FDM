@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
-  GraduationCap, User, UserCheck, Building2, ArrowRight,
-  CheckCircle, ShieldCheck, Lock, EyeOff, Target
+  GraduationCap, User, UserCheck, Building2, ArrowRight, Star,
+  TrendingUp, Award, CheckCircle, BarChart3, MessageSquare
 } from 'lucide-react';
 import PublicNavbar from '../components/common/PublicNavbar';
 
@@ -44,35 +44,11 @@ const LandingPage = () => {
     }
   ];
 
-  const privacyFeatures = [
-    { 
-      icon: EyeOff, 
-      title: '100% Anonymous', 
-      description: 'No faculty member or authority can see who submitted which feedback.',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50'
-    },
-    { 
-      icon: ShieldCheck, 
-      title: 'Identity Protected', 
-      description: 'Feel free to be honest—your identity is always protected.',
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50'
-    },
-    { 
-      icon: Lock, 
-      title: 'Strictly Confidential', 
-      description: 'All feedback is collected anonymously and is strictly confidential.',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50'
-    },
-    { 
-      icon: Target, 
-      title: 'Your Voice Matters', 
-      description: 'Your feedback directly influences future faculty assignments.',
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50'
-    }
+  const stats = [
+    { icon: Star, value: '5000+', label: 'Feedback Collected' },
+    { icon: TrendingUp, value: '95%', label: 'Satisfaction Rate' },
+    { icon: Award, value: '200+', label: 'Faculty Members' },
+    { icon: CheckCircle, value: '98%', label: 'Response Rate' }
   ];
 
   return (
@@ -88,36 +64,14 @@ const LandingPage = () => {
             Empowering educational excellence through comprehensive feedback
           </p>
           
-          {/* Privacy & Anonymity Section */}
-          <div className="mt-12 max-w-5xl mx-auto">
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              transition={{ delay: 0.2 }}
-              className="bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-lime-400 rounded-2xl p-[2px]"
-            >
-              <div className="bg-white rounded-xl p-6">
-                <div className="flex items-center justify-center gap-2 mb-6">
-                  <ShieldCheck className="h-6 w-6 text-blue-600" />
-                  <h3 className="text-xl font-bold text-gray-800">Your Privacy is Our Priority</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {privacyFeatures.map((feature, i) => (
-                    <motion.div 
-                      key={i} 
-                      initial={{ opacity: 0, y: 20 }} 
-                      animate={{ opacity: 1, y: 0 }} 
-                      transition={{ delay: 0.3 + i * 0.1 }}
-                      className={`${feature.bgColor} rounded-xl p-4 text-left hover:shadow-md transition-shadow`}
-                    >
-                      <feature.icon className={`h-8 w-8 ${feature.color} mb-3`} />
-                      <h4 className="font-semibold text-gray-800 mb-1">{feature.title}</h4>
-                      <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto mt-10">
+            {stats.map((stat, i) => (
+              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }} className="bg-white rounded-xl p-5 shadow-sm">
+                <stat.icon className="h-7 w-7 text-fdm-600 mx-auto mb-2" />
+                <div className="text-xl font-bold">{stat.value}</div>
+                <div className="text-xs text-gray-600">{stat.label}</div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
 

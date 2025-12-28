@@ -76,10 +76,6 @@ const AdminLogin = () => {
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
-
-          <p className="text-center text-sm text-gray-600 mt-6">
-            Need help? <a href="#" className="text-orange-600 hover:text-orange-700 font-medium">Contact Support</a>
-          </p>
         </div>
       </motion.div>
     </div>

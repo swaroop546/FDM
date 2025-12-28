@@ -1,30 +1,61 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Home, ChevronRight, ChevronLeft, Eye, ChevronDown } from 'lucide-react';
+import { Home, ChevronRight, ChevronLeft, Eye, ChevronDown, User, BookOpen } from 'lucide-react';
 
 const SemesterFeedback = () => {
   const navigate = useNavigate();
   const { semesterId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 3;
+  const totalPages = 2; // 5 faculty per page, 10 total
 
-  // Sample faculty data - 10 faculty per question
-  // Total: 20 questions × 10 faculty = 200 ratings
+  const facultyList = [
+    { id: 0, name: 'Dr. Smith', subject: 'Data Structures' },
+    { id: 1, name: 'Prof. Johnson', subject: 'Algorithms' },
+    { id: 2, name: 'Dr. Williams', subject: 'Database Systems' },
+    { id: 3, name: 'Prof. Brown', subject: 'Operating Systems' },
+    { id: 4, name: 'Dr. Jones', subject: 'Computer Networks' },
+    { id: 5, name: 'Prof. Davis', subject: 'Software Engineering' },
+    { id: 6, name: 'Dr. Miller', subject: 'Web Development' },
+    { id: 7, name: 'Prof. Wilson', subject: 'Machine Learning' },
+    { id: 8, name: 'Dr. Moore', subject: 'AI' },
+    { id: 9, name: 'Prof. Taylor', subject: 'Cloud Computing' }
+  ];
+
+  const questions = [
+    "Teacher is prepared for class and good at blackboard management.",
+    "Teacher knows his/her subject. His lecture is audible and expressive with clarity.",
+    "Teacher is organized and neat. Teacher has clear classroom procedures so students don't waste time.",
+    "Teacher is punctual to the class, plans class time and help students to solve problems and think critically.",
+    "Teacher is flexible in accommodating for individual student needs.",
+    "Teacher is clear in giving directions and on explaining what is expected on tests.",
+    "Teacher allows you to be active in the classroom learning environment.",
+    "Teacher manages the time well and covers the syllabus.",
+    "Teacher awards marks fairly. Teacher conducts examination as per schedule.",
+    "I have learned a lot about this subject and the teacher motivates the students.",
+    "Teacher gives me good feedback so that I can improve.",
+    "Teacher uses advanced teaching aids. Teacher is creative in developing activities.",
+    "Teacher encourages students to speak up and be active in the class.",
+    "Teacher follows through on what he/she says. You can count on the teacher's word.",
+    "Teacher listens and understands students' point of view.",
+    "Teacher adjusts class work when on leave or compensates missed classes.",
+    "Teacher is consistent, fair and firm in discipline without being too strict.",
+    "Teacher is sensitive to the needs of students. Teacher likes and respects students.",
+    "Teacher helps you when you ask for help.",
+    "Teacher's words and actions match. I trust this teacher."
+  ];
+
+  // Generate feedback data: 10 faculty × 20 questions = 200 ratings
   const generateFeedbackData = () => {
     const data = [];
-    const facultyNames = ['Dr. Smith', 'Prof. Johnson', 'Dr. Williams', 'Prof. Brown', 'Dr. Jones', 'Prof. Davis', 'Dr. Miller', 'Prof. Wilson', 'Dr. Moore', 'Prof. Taylor'];
-    const subjects = ['Data Structures', 'Algorithms', 'Database Systems', 'Operating Systems', 'Computer Networks', 'Software Engineering', 'Web Development', 'Machine Learning', 'AI', 'Cloud Computing'];
-    
-    // 20 questions total
-    for (let questionIndex = 0; questionIndex < 20; questionIndex++) {
-      // 10 faculty per question
-      for (let facultyIndex = 0; facultyIndex < 10; facultyIndex++) {
+    for (let facultyIndex = 0; facultyIndex < 10; facultyIndex++) {
+      for (let questionIndex = 0; questionIndex < 20; questionIndex++) {
         data.push({
-          id: `q${questionIndex}-f${facultyIndex}`,
+          id: `f${facultyIndex}-q${questionIndex}`,
+          facultyIndex: facultyIndex,
           questionIndex: questionIndex,
-          facultyName: facultyNames[facultyIndex],
-          subject: subjects[facultyIndex],
+          facultyName: facultyList[facultyIndex].name,
+          subject: facultyList[facultyIndex].subject,
           rating: null
         });
       }
@@ -33,6 +64,7 @@ const SemesterFeedback = () => {
   };
 
   const [feedbackData, setFeedbackData] = useState(generateFeedbackData());
+  const [expandedFaculty, setExpandedFaculty] = useState({});
 
   const handleRatingChange = (id, rating) => {
     setFeedbackData(prev => 
@@ -40,16 +72,22 @@ const SemesterFeedback = () => {
     );
   };
 
-  // Get questions for current page: Page 1: 6, Page 2: 6, Page 3: 8
-  const getQuestionsForPage = (page) => {
-    if (page === 1) return [0, 1, 2, 3, 4, 5]; // Questions 1-6
-    if (page === 2) return [6, 7, 8, 9, 10, 11]; // Questions 7-12
-    if (page === 3) return [12, 13, 14, 15, 16, 17, 18, 19]; // Questions 13-20
+  const toggleFaculty = (facultyIndex) => {
+    setExpandedFaculty(prev => ({
+      ...prev,
+      [facultyIndex]: !prev[facultyIndex]
+    }));
+  };
+
+  // Get faculty for current page: Page 1: 5 faculty, Page 2: 5 faculty
+  const getFacultyForPage = (page) => {
+    if (page === 1) return [0, 1, 2, 3, 4];
+    if (page === 2) return [5, 6, 7, 8, 9];
     return [];
   };
 
-  const getQuestionData = (questionIndex) => {
-    return feedbackData.filter(item => item.questionIndex === questionIndex);
+  const getFacultyData = (facultyIndex) => {
+    return feedbackData.filter(item => item.facultyIndex === facultyIndex);
   };
 
   const handleNextPage = () => {
@@ -74,132 +112,77 @@ const SemesterFeedback = () => {
     setFeedbackData(prev => 
       prev.map(item => ({
         ...item,
-        rating: Math.floor(Math.random() * 5) + 1 // Random rating between 1-5
+        rating: Math.floor(Math.random() * 5) + 1
       }))
     );
   };
 
-  const RatingRow = ({ item }) => (
-    <tr className="hover:bg-gray-50 transition-colors">
-      <td className="py-4 px-6">
-        <div className="flex flex-col">
-          <span className="font-medium text-sm">{item.facultyName}</span>
-          <span className="text-xs text-gray-600 mt-1">{item.subject}</span>
-        </div>
-      </td>
-      <td className="py-4 px-6">
-        <div className="flex items-center justify-center gap-6">
-          {[1, 2, 3, 4, 5].map(rating => (
-            <label key={rating} className="flex items-center cursor-pointer group">
-              <input
-                type="radio"
-                name={`rating-${item.id}`}
-                value={rating}
-                checked={item.rating === rating}
-                onChange={() => handleRatingChange(item.id, rating)}
-                className="w-4 h-4 text-blue-600 cursor-pointer"
-              />
-              <span className="ml-2 text-sm text-gray-700 group-hover:text-blue-600">{rating}</span>
-            </label>
-          ))}
-        </div>
-      </td>
-    </tr>
-  );
-
-  const questions = [
-    "Teacher is prepared for class and good at blackboard management.",
-    "Teacher knows his/her subject. His lecture is audible and expressive with clarity.",
-    "Teacher is organized and neat. Teacher has clear classroom procedures so students don't waste time.",
-    "Teacher is punctual to the class, plans class time and help students to solve problems and think critically. Teacher provides activities that make subject matter meaningful.",
-    "Teacher is flexible in accommodating for individual student needs.",
-    "Teacher is clear in giving directions and on explaining what is expected on tests. He has clear idea in setting question paper.",
-    "Teacher allows you to be active in the classroom learning environment.",
-    "Teacher manages the time well and covers the syllabus.",
-    "Teacher awards marks fairly. Teacher conducts examination as per schedule.",
-    "I have learned a lot about this subject and the teacher motivates the students in global aspects besides teaching.",
-    "Teacher gives me good feedback so that I can improve.",
-    "Teacher uses advanced teaching aids. Teacher is creative in developing activities and lessons.",
-    "Teacher encourages students to speak up and be active in the class.",
-    "Teacher follows through on what he/she says. You can count on the teacher's word.",
-    "Teacher listens and understands students' point of view. Teacher respects the opinions and decisions of students.",
-    "Teacher adjusts class work when on leave or compensates missed classes. Teacher is willing to accept responsibility for his/her own mistakes.",
-    "Teacher is consistent, fair and firm in discipline without being too strict.",
-    "Teacher is sensitive to the needs of students. Teacher likes and respects students.",
-    "Teacher helps you when you ask for help.",
-    "Teacher's words and actions match. I trust this teacher."
-  ];
-
-  const [expandedQuestions, setExpandedQuestions] = useState({});
-
-  const toggleQuestion = (questionIndex) => {
-    setExpandedQuestions(prev => ({
-      ...prev,
-      [questionIndex]: !prev[questionIndex]
-    }));
-  };
-
-  const QuestionCard = ({ questionIndex }) => {
-    const questionData = getQuestionData(questionIndex);
-    const isExpanded = expandedQuestions[questionIndex];
-    const filledCount = questionData.filter(item => item.rating !== null).length;
-    
-    const handleToggle = () => {
-      toggleQuestion(questionIndex);
-    };
+  const FacultyCard = ({ facultyIndex }) => {
+    const faculty = facultyList[facultyIndex];
+    const facultyData = getFacultyData(facultyIndex);
+    const isExpanded = expandedFaculty[facultyIndex];
+    const filledCount = facultyData.filter(item => item.rating !== null).length;
     
     return (
-      <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200 h-fit">
+      <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
         <button
           type="button"
-          onClick={handleToggle}
-          className="w-full bg-blue-600 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 hover:bg-blue-700 transition-all"
+          onClick={() => toggleFaculty(facultyIndex)}
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-4 flex items-center justify-between gap-3 hover:from-blue-700 hover:to-blue-800 transition-all"
         >
-          <div className="flex items-start gap-2 flex-1 text-left pointer-events-none">
-            <span className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 bg-white text-blue-600 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm">
-              {questionIndex + 1}
-            </span>
-            <h3 className="text-white font-semibold text-xs sm:text-sm flex-1 leading-snug">{questions[questionIndex]}</h3>
+          <div className="flex items-center gap-3 flex-1 text-left">
+            <div className="shrink-0 w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+              <User className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-sm sm:text-base">{faculty.name}</h3>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <BookOpen className="h-3 w-3 text-blue-200" />
+                <span className="text-blue-100 text-xs sm:text-sm">{faculty.subject}</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pointer-events-none">
-            <span className={`text-xs font-bold px-2 py-0.5 rounded ${filledCount === questionData.length ? 'bg-green-400 text-gray-900' : 'bg-yellow-400 text-gray-900'}`}>
-              {filledCount}/10
+          <div className="flex items-center gap-2 shrink-0">
+            <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${filledCount === 20 ? 'bg-green-400 text-gray-900' : 'bg-yellow-400 text-gray-900'}`}>
+              {filledCount}/20
             </span>
-            <ChevronDown className={`h-4 w-4 text-white transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`h-5 w-5 text-white transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           </div>
         </button>
         
         {isExpanded && (
-          <div className="p-2 sm:p-3">
-            <div className="mb-2 pb-2 border-b border-gray-200">
-              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs">
-                <span className="font-semibold text-gray-700">Scale:</span>
-                <span className="text-red-600 font-medium">1-Poor</span>
-                <span className="text-orange-500 font-medium">2-Fair</span>
-                <span className="text-yellow-500 font-medium">3-Avg</span>
-                <span className="text-blue-500 font-medium">4-Good</span>
-                <span className="text-green-600 font-medium">5-Excellent</span>
+          <div className="p-3 sm:p-4">
+            <div className="mb-3 pb-3 border-b border-gray-200">
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="font-semibold text-gray-700">Rating Scale:</span>
+                <span className="px-2 py-0.5 rounded bg-red-100 text-red-600 font-medium">1-Poor</span>
+                <span className="px-2 py-0.5 rounded bg-orange-100 text-orange-600 font-medium">2-Fair</span>
+                <span className="px-2 py-0.5 rounded bg-yellow-100 text-yellow-600 font-medium">3-Avg</span>
+                <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-600 font-medium">4-Good</span>
+                <span className="px-2 py-0.5 rounded bg-green-100 text-green-600 font-medium">5-Excellent</span>
               </div>
             </div>
-            <div className="space-y-1">
-              {questionData.map(item => (
-                <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 p-1.5 rounded-lg hover:bg-gray-50 border border-gray-100">
-                  <div className="flex-1 min-w-0 w-full sm:w-auto">
-                    <div className="font-medium text-[11px] text-gray-900">{item.facultyName}</div>
-                    <div className="text-[9px] text-gray-600">{item.subject}</div>
+            <div className="space-y-2">
+              {facultyData.map((item, idx) => (
+                <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-3 rounded-lg hover:bg-gray-50 border border-gray-100 transition-colors">
+                  <div className="flex items-start gap-2 flex-1 min-w-0">
+                    <span className="shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xs">
+                      {idx + 1}
+                    </span>
+                    <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">{questions[idx]}</p>
                   </div>
-                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+                  <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-center sm:justify-end mt-2 sm:mt-0">
                     {[1, 2, 3, 4, 5].map(rating => (
-                        <label key={rating} className="flex items-center cursor-pointer group">
-                          <input
-                            type="radio"
-                            name={`rating-${item.id}`}
-                            value={rating}
-                            checked={item.rating === rating}
-                            onChange={() => handleRatingChange(item.id, rating)}
-                            className="w-3 h-3 text-blue-600 cursor-pointer"
-                          />
-                          <span className="ml-0.5 text-[11px] text-gray-700 group-hover:text-blue-600 font-medium">{rating}</span>
+                      <label key={rating} className="flex items-center cursor-pointer group">
+                        <input
+                          type="radio"
+                          name={`rating-${item.id}`}
+                          value={rating}
+                          checked={item.rating === rating}
+                          onChange={() => handleRatingChange(item.id, rating)}
+                          className="w-4 h-4 text-blue-600 cursor-pointer"
+                        />
+                        <span className="ml-1 text-xs text-gray-700 group-hover:text-blue-600 font-medium">{rating}</span>
                       </label>
                     ))}
                   </div>
@@ -237,11 +220,11 @@ const SemesterFeedback = () => {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <div className="max-w-5xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900">SEMESTER {semesterId} FEEDBACK</h1>
-            <p className="text-xs sm:text-sm text-gray-600 mt-1">Page {currentPage} of {totalPages}</p>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">Rate each faculty member on 20 parameters • Page {currentPage} of {totalPages}</p>
           </div>
           <button
             onClick={handleDemoFill}
@@ -251,10 +234,10 @@ const SemesterFeedback = () => {
           </button>
         </motion.div>
 
-        {/* Feedback Questions - 2 Column Grid */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          {getQuestionsForPage(currentPage).map(qIndex => (
-            <QuestionCard key={qIndex} questionIndex={qIndex} />
+        {/* Faculty Cards */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="space-y-4">
+          {getFacultyForPage(currentPage).map(fIndex => (
+            <FacultyCard key={fIndex} facultyIndex={fIndex} />
           ))}
         </motion.div>
 
@@ -311,12 +294,14 @@ const SemesterFeedback = () => {
         <div className="mt-4 sm:mt-6 bg-white rounded-lg p-3 sm:p-4 shadow-md">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs sm:text-sm text-gray-600">OVERALL PROGRESS</span>
-            <span className="text-xs sm:text-sm font-medium text-gray-900">{currentPage}/{totalPages} Pages</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-900">
+              {feedbackData.filter(item => item.rating !== null).length}/200 Ratings
+            </span>
           </div>
           <div className="h-2 sm:h-2.5 bg-gray-200 rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-300"
-              style={{ width: `${(currentPage / totalPages) * 100}%` }}
+              style={{ width: `${(feedbackData.filter(item => item.rating !== null).length / 200) * 100}%` }}
             />
           </div>
         </div>

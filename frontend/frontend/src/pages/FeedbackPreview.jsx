@@ -325,6 +325,26 @@ const FeedbackPreview = () => {
           {/* Analytics Header */}
           <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-lg">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Feedback Analytics</h2>
+            
+            {/* Key Metrics */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+                <p className="text-xs text-blue-600 font-medium uppercase tracking-wide mb-1">Total Responses</p>
+                <p className="text-2xl font-bold text-blue-900">{completedCount}</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
+                <p className="text-xs text-green-600 font-medium uppercase tracking-wide mb-1">Avg Rating</p>
+                <p className="text-2xl font-bold text-green-900">{averageRating}</p>
+              </div>
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200">
+                <p className="text-xs text-purple-600 font-medium uppercase tracking-wide mb-1">Completion</p>
+                <p className="text-2xl font-bold text-purple-900">{completionPercent}%</p>
+              </div>
+              <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-4 border border-amber-200">
+                <p className="text-xs text-amber-600 font-medium uppercase tracking-wide mb-1">Remaining</p>
+                <p className="text-2xl font-bold text-amber-900">{totalCount - completedCount}</p>
+              </div>
+            </div>
 
             {/* Rating Distribution */}
             <div>

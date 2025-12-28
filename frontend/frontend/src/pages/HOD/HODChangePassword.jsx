@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, CheckCircle, AlertCircle } from 'lucide-react';
 
-const ChangePassword = () => {
+const HODChangePassword = () => {
   const navigate = useNavigate();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -49,6 +49,7 @@ const ChangePassword = () => {
     setErrorMessage('');
     setSuccessMessage('');
 
+    // Validation
     const newErrors = {};
 
     if (!formData.currentPassword) {
@@ -79,10 +80,13 @@ const ChangePassword = () => {
       return;
     }
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Mock successful password change
       setSuccessMessage('Password changed successfully! Redirecting to dashboard...');
       setFormData({
         currentPassword: '',
@@ -91,12 +95,12 @@ const ChangePassword = () => {
       });
 
       setTimeout(() => {
-        navigate('/student/dashboard');
+        navigate('/hod/dashboard');
       }, 2000);
     } catch (error) {
       setErrorMessage('Failed to change password. Please try again.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -107,6 +111,7 @@ const ChangePassword = () => {
     if (/[a-z]/.test(password)) strength++;
     if (/\d/.test(password)) strength++;
     if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+
     return strength;
   };
 
@@ -223,7 +228,7 @@ const ChangePassword = () => {
               {errors.newPassword && (
                 <p className="mt-1 text-sm text-red-600">{errors.newPassword}</p>
               )}
-
+              
               {/* Password Strength Indicator */}
               {formData.newPassword && !errors.newPassword && (
                 <div className="mt-2">
@@ -290,15 +295,15 @@ const ChangePassword = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              {loading ? 'Changing Password...' : 'Change Password'}
+              {isLoading ? 'Changing Password...' : 'Change Password'}
             </button>
 
             <button
               type="button"
-              onClick={() => navigate('/student/dashboard')}
+              onClick={() => navigate('/hod/dashboard')}
               className="w-full py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-all font-medium"
             >
               Cancel
@@ -310,4 +315,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default HODChangePassword;
