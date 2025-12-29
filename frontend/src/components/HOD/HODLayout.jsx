@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { 
-  LayoutDashboard, FileText, BarChart3, Lock, HelpCircle, LogOut, 
+  LayoutDashboard, FileText, BarChart3, Lock, LogOut, 
   ChevronLeft, ChevronRight 
 } from 'lucide-react';
 import jntugvLogo from '../../assets/jntugv_logo.jpg';
@@ -27,8 +27,7 @@ const HODLayout = () => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/hod/dashboard' },
     { id: 'feedback', label: 'Feedback Management', icon: FileText, path: '/hod/feedback-management' },
     { id: 'analytics', label: 'Feedback Analytics', icon: BarChart3, path: '/hod/feedback-analytics' },
-    { id: 'password', label: 'Change Password', icon: Lock, path: '/hod/change-password' },
-    { id: 'help', label: 'Help & Contact', icon: HelpCircle, path: '/hod/help' }
+    { id: 'password', label: 'Change Password', icon: Lock, path: '/hod/change-password' }
   ];
 
   const isActive = (path) => location.pathname === path;

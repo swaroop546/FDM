@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { FileText, BarChart3, GraduationCap, Users, Calendar, TrendingUp } from 'lucide-react';
+import { FileText, BarChart3, GraduationCap, Users, Calendar } from 'lucide-react';
 
 const HODDashboard = () => {
   const navigate = useNavigate();
@@ -16,8 +16,7 @@ const HODDashboard = () => {
   const stats = [
     { icon: GraduationCap, label: 'Active Batches', value: '4', color: 'emerald', bgColor: 'bg-emerald-100', textColor: 'text-emerald-600' },
     { icon: Users, label: 'Total Students', value: '320', color: 'blue', bgColor: 'bg-blue-100', textColor: 'text-blue-600' },
-    { icon: Calendar, label: 'Active Semesters', value: '8', color: 'purple', bgColor: 'bg-purple-100', textColor: 'text-purple-600' },
-    { icon: TrendingUp, label: 'Avg Rating', value: '4.2/5', color: 'orange', bgColor: 'bg-orange-100', textColor: 'text-orange-600' }
+    { icon: Calendar, label: 'Active Semesters', value: '8', color: 'purple', bgColor: 'bg-purple-100', textColor: 'text-purple-600' }
   ];
 
   const quickActions = [
@@ -66,9 +65,6 @@ const HODDashboard = () => {
               <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
                 {hodInfo.department}
               </span>
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                {hodInfo.program}
-              </span>
               <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
                 HOD - {hodInfo.branch}
               </span>
@@ -78,7 +74,7 @@ const HODDashboard = () => {
       </motion.div>
 
       {/* Statistics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6">
         {stats.map((stat, i) => (
           <motion.div
             key={i}

@@ -295,9 +295,6 @@ const StudentDashboardHome = () => {
                       Submitted on {session.submittedDate}
                     </p>
                   )}
-                  {session.status === 'closed' && !session.submittedDate && (
-                    <p className="text-xs text-gray-500">Closed</p>
-                  )}
                 </div>
                 {session.status === 'active' && (
                   <button
@@ -308,12 +305,14 @@ const StudentDashboardHome = () => {
                   </button>
                 )}
                 {session.status === 'submitted' && (
-                  <button
-                    onClick={() => navigate(`/student/semester/${session.id}/receipt`)}
-                    className="w-full py-2 px-4 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    View Receipt →
-                  </button>
+                  <p className="w-full py-2 px-4 bg-green-50 text-green-700 text-sm font-medium rounded-lg text-center">
+                    Feedback form already submitted
+                  </p>
+                )}
+                {session.status === 'closed' && !session.submittedDate && (
+                  <p className="w-full py-2 px-4 bg-gray-100 text-gray-500 text-sm font-medium rounded-lg text-center">
+                    Feedback form expired
+                  </p>
                 )}
               </div>
             </motion.div>
