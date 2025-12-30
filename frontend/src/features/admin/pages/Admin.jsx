@@ -1,11 +1,8 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../../../context/AuthContext'
 import { 
-  LogOut, Users, Upload, BookOpen, 
-  Calendar, Plus, Trash2, Save, 
-  X, Award, GraduationCap, FileText, MapPin, AlertCircle,
-  Briefcase, UserCheck, Layers
+  Users, Upload, BookOpen, 
+  Calendar, X, GraduationCap, FileText, MapPin,
+  Briefcase, UserCheck, Layers, Save
 } from 'lucide-react'
 import { students, faculty, subjects, programs, branches, batches, hods } from '../../../shared/constants/student'
 
@@ -127,8 +124,6 @@ const UploadModal = ({ isOpen, onClose, title, subtitle, columns, onUpload, file
 
 
 const AdminPage = () => {
-  const navigate = useNavigate()
-  const { user, logout } = useAuth()
   const [activeTab, setActiveTab] = useState('batch-management')
 
   // --- State for Management Columns ---
@@ -181,16 +176,6 @@ const AdminPage = () => {
     setFile(null)
   }
 
-  const handleLogout = () => {
-    logout()
-    navigate('/')
-  }
-
-  if (!user) {
-    navigate('/')
-    return null
-  }
-
   const tabs = [
     { id: 'batch-management', label: 'Batch Management', icon: Calendar },
     { id: 'program-management', label: 'Program Management', icon: Briefcase },
@@ -232,30 +217,20 @@ const AdminPage = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8">
       
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-sm shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
-                Super Admin Dashboard
-              </h1>
-              <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">Feedback Management System</p>
-            </div>
-            <button onClick={handleLogout} className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-lg transition-all shadow-md hover:shadow-lg text-sm sm:text-base">
-              <LogOut size={16} className="sm:w-[18px] sm:h-[18px]" />
-              <span className="hidden sm:inline">Logout</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+          Super Admin Dashboard
+        </h1>
+        <p className="text-sm text-gray-600 mt-1">Feedback Management System - Full Control</p>
+      </div>
 
       {/* Tabs */}
-      <div className="bg-white shadow-sm sticky top-[56px] sm:top-[72px] z-40">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4">
-          <div className="flex gap-1 sm:gap-2 overflow-x-auto scrollbar-thin pb-2">
+      <div className="bg-white shadow-sm rounded-xl mb-6">
+        <div className="px-2 sm:px-4">
+          <div className="flex gap-1 sm:gap-2 overflow-x-auto scrollbar-thin py-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -273,7 +248,7 @@ const AdminPage = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-6">
+      <div className="mt-4">
         
         {/* === BATCH MANAGEMENT === */}
         {activeTab === 'batch-management' && (

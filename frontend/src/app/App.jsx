@@ -34,6 +34,10 @@ import HODChangePassword from '../features/hod/pages/HODChangePassword';
 
 // Admin Feature
 import AdminPage from '../features/admin/pages/Admin';
+import AdminLayout from '../features/admin/layouts/AdminLayout';
+import PrincipalAnalytics from '../features/admin/pages/PrincipalAnalytics';
+import PrincipalAnalyticsReport from '../features/admin/pages/PrincipalAnalyticsReport';
+import AdminChangePassword from '../features/admin/pages/AdminChangePassword';
 
 function App() {
   return (
@@ -77,9 +81,12 @@ function App() {
           </Route>
           
           {/* Admin Routes */}
-          <Route path="/admin" element={<AdminPage />} />
-          {/* Keep the old placeholder route just in case, or map /admin/dashboard to AdminPage as well if needed */}
-          <Route path="/admin/dashboard" element={<AdminPage />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="dashboard" element={<AdminPage />} />
+            <Route path="analytics" element={<PrincipalAnalytics />} />
+            <Route path="analytics/report" element={<PrincipalAnalyticsReport />} />
+            <Route path="change-password" element={<AdminChangePassword />} />
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

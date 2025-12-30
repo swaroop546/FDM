@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building2, Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Building2, Mail, Lock, Eye, EyeOff, ArrowLeft, Shield, UserCog, Crown } from 'lucide-react';
 import PublicNavbar from '../../../shared/components/PublicNavbar';
 
 import { useAuth } from '../../../context/AuthContext';
@@ -10,24 +10,57 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [selectedRole, setSelectedRole] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Role options
+  const roles = [
+    { id: 'principal', name: 'Principal', icon: Crown, color: 'from-amber-500 to-orange-600', description: 'Full analytics access' },
+    { id: 'vice-principal', name: 'Vice Principal', icon: Shield, color: 'from-teal-500 to-cyan-600', description: 'Analytics access' },
+    { id: 'super-admin', name: 'Super Admin', icon: UserCog, color: 'from-purple-500 to-indigo-600', description: 'Full system control' }
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedRole) {
+      alert('Please select a role');
+      return;
+    }
     setLoading(true);
     // Simulate API call
     setTimeout(() => {
+      const roleData = roles.find(r => r.id === selectedRole);
       // Set the user in the context
       login({ 
         email: formData.email, 
-        role: 'admin', 
-        name: 'Administrator' 
+        role: 'admin',
+        adminRole: selectedRole,
+        name: roleData?.name || 'Administrator'
       });
       setLoading(false);
-      navigate('/admin/dashboard');
+      // Navigate based on role
+      if (selectedRole === 'principal' || selectedRole === 'vice-principal') {
+        navigate('/admin/analytics');
+      } else {
+        navigate('/admin/dashboard');
+      }
     }, 1500);
   };
+
+  const getRoleIcon = () => {
+    if (selectedRole === 'principal') return Crown;
+    if (selectedRole === 'vice-principal') return Shield;
+    if (selectedRole === 'super-admin') return UserCog;
+    return Building2;
+  };
+
+  const getRoleColor = () => {
+    const role = roles.find(r => r.id === selectedRole);
+    return role?.color || 'from-orange-500 to-orange-600';
+  };
+
+  const RoleIcon = getRoleIcon();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100">
@@ -37,14 +70,47 @@ const AdminLogin = () => {
 
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-5 sm:p-6 md:p-8">
           <div className="text-center mb-6 sm:mb-8">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <Building2 className="h-7 w-7 sm:h-9 sm:w-9 text-white" />
-            </div>
+            <motion.div 
+              key={selectedRole}
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              className={`w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${getRoleColor()} rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4`}
+            >
+              <RoleIcon className="h-7 w-7 sm:h-9 sm:w-9 text-white" />
+            </motion.div>
             <h2 className="text-xl sm:text-2xl font-bold">Administrator Login</h2>
             <p className="text-xs sm:text-sm text-gray-600 mt-2">System management access</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+            {/* Role Selection */}
+            <div>
+              <label className="block text-xs sm:text-sm font-medium mb-2">Select Role</label>
+              <div className="grid grid-cols-3 gap-2">
+                {roles.map((role) => (
+                  <button
+                    key={role.id}
+                    type="button"
+                    onClick={() => setSelectedRole(role.id)}
+                    className={`p-3 rounded-xl border-2 transition-all ${
+                      selectedRole === role.id
+                        ? `border-orange-500 bg-orange-50`
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <role.icon className={`h-5 w-5 mx-auto mb-1 ${selectedRole === role.id ? 'text-orange-600' : 'text-gray-400'}`} />
+                    <p className={`text-xs font-medium ${selectedRole === role.id ? 'text-orange-700' : 'text-gray-600'}`}>
+                      {role.id === 'super-admin' ? 'Super Admin' : role.name}
+                    </p>
+                  </button>
+                ))}
+              </div>
+              {selectedRole && (
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  {roles.find(r => r.id === selectedRole)?.description}
+                </p>
+              )}
+            </div>
             <div>
               <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">Email Address</label>
               <div className="relative">
