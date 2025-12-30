@@ -1,16 +1,72 @@
-# React + Vite
+# Feedback Management Portal - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-grade React application for managing student feedback in educational institutions.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** with Vite
+- **Tailwind CSS** for styling
+- **React Router** for navigation
+- **Framer Motion** for animations
+- **Lucide React** for icons
 
-## React Compiler
+## Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+frontend/
+├── public/                 # Static assets
+├── src/
+│   ├── app/               # App bootstrap & routing
+│   │   └── App.jsx        # Main app with routes
+│   ├── features/          # Role-based feature modules
+│   │   ├── admin/         # Admin module
+│   │   │   ├── pages/
+│   │   │   ├── components/
+│   │   │   └── layouts/
+│   │   ├── auth/          # Authentication module
+│   │   │   ├── pages/     # Login, Landing, ForgotPassword
+│   │   │   └── components/
+│   │   ├── hod/           # HOD module
+│   │   │   ├── pages/     # Dashboard, Feedback, Analytics
+│   │   │   ├── components/
+│   │   │   └── layouts/   # HODLayout
+│   │   └── student/       # Student module
+│   │       ├── pages/     # Profile, Submissions, Feedback
+│   │       ├── components/
+│   │       └── layouts/   # StudentLayout
+│   ├── shared/            # Shared resources
+│   │   ├── components/    # Reusable UI components
+│   │   ├── hooks/         # Custom hooks
+│   │   ├── utils/         # Utility functions
+│   │   └── constants/     # Data & constants
+│   ├── context/           # Global state providers
+│   ├── assets/            # Images, fonts
+│   ├── styles/            # Global styles
+│   └── main.jsx           # Entry point
+├── package.json
+├── vite.config.js
+└── tailwind.config.js
+```
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Path Aliases
+
+Available import aliases (configured in vite.config.js):
+
+- `@/` → `src/`
+- `@features/` → `src/features/`
+- `@shared/` → `src/shared/`
+- `@context/` → `src/context/`
+- `@assets/` → `src/assets/`
