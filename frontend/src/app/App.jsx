@@ -31,7 +31,6 @@ import FeedbackAnalytics from '../features/hod/pages/FeedbackAnalytics';
 import AnalyticsSemesterSelection from '../features/hod/pages/AnalyticsSemesterSelection';
 import AnalyticsReport from '../features/hod/pages/AnalyticsReport';
 import HODChangePassword from '../features/hod/pages/HODChangePassword';
-import HODHelp from '../features/hod/pages/HODHelp';
 
 // Admin Feature
 import AdminPage from '../features/admin/pages/Admin';
@@ -75,7 +74,6 @@ function App() {
             <Route path="feedback-analytics/semesters" element={<AnalyticsSemesterSelection />} />
             <Route path="feedback-analytics/report" element={<AnalyticsReport />} />
             <Route path="change-password" element={<HODChangePassword />} />
-            <Route path="help" element={<HODHelp />} />
           </Route>
           
           {/* Admin Routes */}

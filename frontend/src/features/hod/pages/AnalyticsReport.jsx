@@ -22,28 +22,28 @@ const AnalyticsReport = () => {
     return null;
   }
 
-  // 20 questions template for each subject
+  // 20 questions template for each subject (same as student feedback questions)
   const questionTemplate = [
-    { id: 1, question: "Faculty demonstrates mastery of the subject" },
-    { id: 2, question: "Explains concepts clearly and effectively" },
-    { id: 3, question: "Uses real-world examples and applications" },
-    { id: 4, question: "Encourages student participation" },
-    { id: 5, question: "Responds to student queries effectively" },
-    { id: 6, question: "Maintains punctuality and regularity" },
-    { id: 7, question: "Completes syllabus on time" },
-    { id: 8, question: "Uses teaching aids effectively" },
-    { id: 9, question: "Provides adequate assignments/tests" },
-    { id: 10, question: "Fair and transparent in evaluation" },
-    { id: 11, question: "Creates positive learning environment" },
-    { id: 12, question: "Accessible outside class hours" },
-    { id: 13, question: "Provides timely feedback on assessments" },
-    { id: 14, question: "Uses innovative teaching methods" },
-    { id: 15, question: "Encourages critical thinking" },
-    { id: 16, question: "Relates theory to practical applications" },
-    { id: 17, question: "Maintains classroom discipline" },
-    { id: 18, question: "Motivated and enthusiastic about teaching" },
-    { id: 19, question: "Communication skills are effective" },
-    { id: 20, question: "Overall teaching effectiveness" }
+    { id: 1, question: "Teacher is prepared for class and good at blackboard management." },
+    { id: 2, question: "Teacher knows his/her subject. His lecture is audible and expressive with clarity." },
+    { id: 3, question: "Teacher is organized and neat. Teacher has clear classroom procedures so students don't waste time." },
+    { id: 4, question: "Teacher is punctual to the class, plans class time and help students to solve problems and think critically." },
+    { id: 5, question: "Teacher is flexible in accommodating for individual student needs." },
+    { id: 6, question: "Teacher is clear in giving directions and on explaining what is expected on tests." },
+    { id: 7, question: "Teacher allows you to be active in the classroom learning environment." },
+    { id: 8, question: "Teacher manages the time well and covers the syllabus." },
+    { id: 9, question: "Teacher awards marks fairly. Teacher conducts examination as per schedule." },
+    { id: 10, question: "I have learned a lot about this subject and the teacher motivates the students." },
+    { id: 11, question: "Teacher gives me good feedback so that I can improve." },
+    { id: 12, question: "Teacher uses advanced teaching aids. Teacher is creative in developing activities." },
+    { id: 13, question: "Teacher encourages students to speak up and be active in the class." },
+    { id: 14, question: "Teacher follows through on what he/she says. You can count on the teacher's word." },
+    { id: 15, question: "Teacher listens and understands students' point of view." },
+    { id: 16, question: "Teacher adjusts class work when on leave or compensates missed classes." },
+    { id: 17, question: "Teacher is consistent, fair and firm in discipline without being too strict." },
+    { id: 18, question: "Teacher is sensitive to the needs of students. Teacher likes and respects students." },
+    { id: 19, question: "Teacher helps you when you ask for help." },
+    { id: 20, question: "Teacher's words and actions match. I trust this teacher." }
   ];
 
   // Generate random ratings for each question (simulating different ratings per subject)
