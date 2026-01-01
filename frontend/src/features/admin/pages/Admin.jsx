@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { 
   Users, Upload, BookOpen, 
   Calendar, X, GraduationCap, FileText, MapPin,
-  Briefcase, UserCheck, Layers, Save
+  Briefcase, UserCheck, Layers, Save, Download
 } from 'lucide-react'
 import { students, faculty, subjects, programs, branches, batches, hods } from '../../../shared/constants/student'
 
@@ -146,23 +146,62 @@ const AdminPage = () => {
   // Student
   const [showStudentUpload, setShowStudentUpload] = useState(false)
   const [studentFile, setStudentFile] = useState(null)
-  const [selectedProgram, setSelectedProgram] = useState('')
-  const [selectedBranch, setSelectedBranch] = useState('')
 
   // Faculty
   const [showFacultyUpload, setShowFacultyUpload] = useState(false)
   const [facultyFile, setFacultyFile] = useState(null)
-  const [facultyFilter, setFacultyFilter] = useState({ program: '', branch: '' })
 
   // Subject
   const [showSubjectUpload, setShowSubjectUpload] = useState(false)
   const [subjectFile, setSubjectFile] = useState(null)
-  const [selectedRegulation, setSelectedRegulation] = useState('R23')
-  const [availableRegulations] = useState(['R23', 'R22', 'R20', 'R19'])
 
-  // Feedback/Mapping
-  const [mappingFilters, setMappingFilters] = useState({ batch: '', program: '', branch: '', semester: '' })
-  const [subjectMappings, setSubjectMappings] = useState({})
+  // Feedback Management
+  const [feedbackSubsection, setFeedbackSubsection] = useState(null) // 'questions' or 'mapping'
+  const [feedbackQuestions, setFeedbackQuestions] = useState([
+    { id: 1, sno: 1, criteria: 'Teacher is prepared for class and good at blackboard management.' },
+    { id: 2, sno: 2, criteria: 'Teacher knows his/her subject. His lecture is audible and expressive with clarity.' },
+    { id: 3, sno: 3, criteria: 'Teacher is organized and neat. Teacher has clear classroom procedures so students don\'t waste time.' },
+    { id: 4, sno: 4, criteria: 'Teacher is punctual to the class, plans class time and help students to solve problems and think critically.' },
+    { id: 5, sno: 5, criteria: 'Teacher is flexible in accommodating for individual student needs.' },
+    { id: 6, sno: 6, criteria: 'Teacher is clear in giving directions and on explaining what is expected on tests.' },
+    { id: 7, sno: 7, criteria: 'Teacher allows you to be active in the classroom learning environment.' },
+    { id: 8, sno: 8, criteria: 'Teacher manages the time well and covers the syllabus.' },
+    { id: 9, sno: 9, criteria: 'Teacher awards marks fairly. Teacher conducts examination as per schedule.' },
+    { id: 10, sno: 10, criteria: 'I have learned a lot about this subject and the teacher motivates the students.' },
+    { id: 11, sno: 11, criteria: 'Teacher gives me good feedback so that I can improve.' },
+    { id: 12, sno: 12, criteria: 'Teacher uses advanced teaching aids. Teacher is creative in developing activities.' },
+    { id: 13, sno: 13, criteria: 'Teacher encourages students to speak up and be active in the class.' },
+    { id: 14, sno: 14, criteria: 'Teacher follows through on what he/she says. You can count on the teacher\'s word.' },
+    { id: 15, sno: 15, criteria: 'Teacher listens and understands students\' point of view.' },
+    { id: 16, sno: 16, criteria: 'Teacher adjusts class work when on leave or compensates missed classes.' },
+    { id: 17, sno: 17, criteria: 'Teacher is consistent, fair and firm in discipline without being too strict.' },
+    { id: 18, sno: 18, criteria: 'Teacher is sensitive to the needs of students. Teacher likes and respects students.' },
+    { id: 19, sno: 19, criteria: 'Teacher helps you when you ask for help.' },
+    { id: 20, sno: 20, criteria: 'Teacher\'s words and actions match. I trust this teacher.' },
+  ])
+  const [editingQuestion, setEditingQuestion] = useState(null)
+  const [newQuestion, setNewQuestion] = useState('')
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState({ show: false, questionId: null, questionText: '' })
+  
+  // Feedback Mapping
+  const [mappingForm, setMappingForm] = useState({
+    program: '',
+    batchYear: '',
+    branch: '',
+    year: '',
+    semester: '',
+    subject: '',
+    faculty: ''
+  })
+  const [feedbackMappings, setFeedbackMappings] = useState([])
+  const [isPublished, setIsPublished] = useState(false)
+  
+  // Helper function to calculate end year based on program and start year
+  const calculateEndYear = (programId, startYear) => {
+    const program = programs.find(p => p.id === Number(programId))
+    if (!program || !startYear) return ''
+    return Number(startYear) + program.duration
+  }
   
   // Handlers
   const handleUploadGeneric = (file, type, setFile, setShow) => {
@@ -184,27 +223,8 @@ const AdminPage = () => {
     { id: 'student-management', label: 'Student Management', icon: Users },
     { id: 'faculty-management', label: 'Faculty Management', icon: GraduationCap },
     { id: 'subject-management', label: 'Subject Management', icon: BookOpen },
-    { id: 'faculty-mapping', label: 'Feedback Mapping', icon: MapPin },
+    { id: 'feedback-management', label: 'Feedback Management', icon: MapPin },
   ]
-
-  // Filter Data Helpers
-  const filteredStudents = students.filter(s => {
-    if (selectedProgram && s.programId !== Number(selectedProgram)) return false
-    if (selectedBranch && s.branchId !== Number(selectedBranch)) return false
-    return true
-  })
-
-  const filteredFaculty = faculty.filter(f => {
-    if (facultyFilter.branch && f.branchId !== Number(facultyFilter.branch)) return false
-    return true
-  })
-
-  const filteredSubjects = subjects.filter(s => {
-    if (selectedRegulation && s.regulation !== selectedRegulation) return false
-    if (selectedProgram && s.programId !== Number(selectedProgram)) return false
-    if (selectedBranch && s.branchId !== Number(selectedBranch)) return false
-    return true
-  })
 
   // Mock upload handlers
   const onUploadBatch = () => handleUploadGeneric(batchFile, 'Batches', setBatchFile, setShowBatchUpload)
@@ -214,6 +234,111 @@ const AdminPage = () => {
   const onUploadStudent = () => handleUploadGeneric(studentFile, 'Students', setStudentFile, setShowStudentUpload)
   const onUploadFaculty = () => handleUploadGeneric(facultyFile, 'Faculty', setFacultyFile, setShowFacultyUpload)
   const onUploadSubject = () => handleUploadGeneric(subjectFile, 'Subjects', setSubjectFile, setShowSubjectUpload)
+
+  // Feedback Question Handlers
+  const handleSaveQuestion = (id, newCriteria) => {
+    setFeedbackQuestions(feedbackQuestions.map(q => 
+      q.id === id ? { ...q, criteria: newCriteria } : q
+    ))
+    setEditingQuestion(null)
+  }
+
+  const handleDeleteQuestion = (id) => {
+    const question = feedbackQuestions.find(q => q.id === id)
+    setDeleteConfirmModal({ show: true, questionId: id, questionText: question?.criteria || '' })
+  }
+
+  const confirmDeleteQuestion = () => {
+    setFeedbackQuestions(feedbackQuestions.filter(q => q.id !== deleteConfirmModal.questionId))
+    setDeleteConfirmModal({ show: false, questionId: null, questionText: '' })
+  }
+
+  const handleAddQuestion = () => {
+    if (!newQuestion.trim()) {
+      alert('Please enter a question')
+      return
+    }
+    const maxSno = Math.max(...feedbackQuestions.map(q => q.sno), 0)
+    const newId = Math.max(...feedbackQuestions.map(q => q.id), 0) + 1
+    setFeedbackQuestions([...feedbackQuestions, {
+      id: newId,
+      sno: maxSno + 1,
+      criteria: newQuestion
+    }])
+    setNewQuestion('')
+  }
+
+  // Feedback Mapping Handlers
+  const handleAddMapping = () => {
+    const { program, batchYear, branch, year, semester, subject, faculty } = mappingForm
+    if (!program || !batchYear || !branch || !year || !semester || !subject || !faculty) {
+      alert('Please fill all fields')
+      return
+    }
+    
+    const programName = programs.find(p => p.id === Number(program))?.name
+    const branchName = branches.find(b => b.id === Number(branch))?.name
+    const subjectName = subjects.find(s => s.id === Number(subject))?.subjectName
+    const facultyName = faculty.find(f => f.id === Number(mappingForm.faculty))?.facultyName
+    
+    const newMapping = {
+      id: feedbackMappings.length + 1,
+      program: programName,
+      batchYear,
+      branch: branchName,
+      year,
+      semester,
+      subject: subjectName,
+      faculty: facultyName,
+      ...mappingForm
+    }
+    
+    setFeedbackMappings([...feedbackMappings, newMapping])
+    setMappingForm({ program: '', batchYear: '', branch: '', year: '', semester: '', subject: '', faculty: '' })
+    alert('Mapping added successfully!')
+  }
+
+  const handleDeleteMapping = (id) => {
+    if (window.confirm('Are you sure you want to delete this mapping?')) {
+      setFeedbackMappings(feedbackMappings.filter(m => m.id !== id))
+    }
+  }
+
+  const handlePublishMapping = () => {
+    if (feedbackMappings.length === 0) {
+      alert('Please add at least one mapping before publishing')
+      return
+    }
+    if (window.confirm('Are you sure you want to publish? HODs will be able to see the timetable.')) {
+      setIsPublished(true)
+      alert('Feedback mapping published successfully! HODs can now view timetables.')
+    }
+  }
+
+  // Download Template Handlers
+  const downloadTemplate = (type, columns) => {
+    // Create CSV content with column headers
+    const csvContent = columns.join(',') + '\n'
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `${type}_template.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const downloadBatchTemplate = () => downloadTemplate('batch', ['Program', 'Batch Year (Start)', 'Branch', 'Students Count'])
+  const downloadProgramTemplate = () => downloadTemplate('program', ['Program Name', 'Program Code', 'Duration'])
+  const downloadBranchTemplate = () => downloadTemplate('branch', ['Branch Name', 'Branch Code', 'Program Code', 'Specialization'])
+  const downloadHodTemplate = () => downloadTemplate('hod', ['Name', 'Email', 'Branch Code', 'Password', 'Designation'])
+  const downloadStudentTemplate = () => downloadTemplate('student', ['Roll Number', 'Name', 'DOB', 'Program ID', 'Batch', 'Regulation'])
+  const downloadFacultyTemplate = () => downloadTemplate('faculty', ['Name', 'Email', 'Designation', 'Branch'])
+  const downloadSubjectTemplate = () => downloadTemplate('subject', ['Subject Name', 'Code', 'Program', 'Branch', 'Regulation', 'Year', 'Semester', 'Type'])
+  const downloadFeedbackQuestionTemplate = () => downloadTemplate('feedback_questions', ['S.No', 'Criteria'])
+  const downloadFeedbackMappingTemplate = () => downloadTemplate('feedback_mapping', ['Map ID', 'Program', 'Batch Year', 'Branch', 'Year', 'Semester', 'Subject Code', 'Faculty Code'])
 
 
   return (
@@ -254,35 +379,29 @@ const AdminPage = () => {
         {activeTab === 'batch-management' && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Batch Management</h2>
-            <button onClick={() => setShowBatchUpload(true)} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all mb-6">
-              <Upload size={18} /> Upload Batches
-            </button>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Batch Name</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Period</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Regulation</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {batches.map((b, i) => (
-                    <tr key={b.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-4 py-3 border-b">{b.name}</td>
-                      <td className="px-4 py-3 border-b">{b.startYear} - {b.endYear}</td>
-                      <td className="px-4 py-3 border-b">{b.regulation}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <p className="text-sm text-gray-600 mb-6">Upload batch data using Excel files. Download the template to see the required format. <span className="font-semibold">End year will be calculated automatically based on program duration</span> (B.Tech: 4 years, M.Tech: 2 years, MBA: 3 years, MCA: 3 years).</p>
+            
+            <div className="flex gap-3">
+              <button 
+                onClick={downloadBatchTemplate}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+              >
+                <Download size={18} /> Download Template
+              </button>
+              <button 
+                onClick={() => setShowBatchUpload(true)} 
+                className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+              >
+                <Upload size={18} /> Upload Batches
+              </button>
             </div>
+
             <UploadModal
               isOpen={showBatchUpload}
               onClose={() => setShowBatchUpload(false)}
               title="Upload Batches"
               subtitle="Bulk import academic batches"
-              columns={['Batch Name', 'Start Year', 'End Year', 'Regulation']}
+              columns={['Program', 'Batch Year (Start)', 'Branch', 'Students Count']}
               onUpload={onUploadBatch}
               file={batchFile}
               setFile={setBatchFile}
@@ -294,27 +413,23 @@ const AdminPage = () => {
         {activeTab === 'program-management' && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Program Management</h2>
-            <button onClick={() => setShowProgramUpload(true)} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all mb-6">
-              <Upload size={18} /> Upload Programs
-            </button>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Program Name</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Duration (Years)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {programs.map((p, i) => (
-                    <tr key={p.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-4 py-3 border-b">{p.name}</td>
-                      <td className="px-4 py-3 border-b">{p.duration || 4}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <p className="text-sm text-gray-600 mb-6">Upload program data using Excel files. Download the template to see the required format.</p>
+            
+            <div className="flex gap-3">
+              <button 
+                onClick={downloadProgramTemplate}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+              >
+                <Download size={18} /> Download Template
+              </button>
+              <button 
+                onClick={() => setShowProgramUpload(true)} 
+                className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+              >
+                <Upload size={18} /> Upload Programs
+              </button>
             </div>
+
             <UploadModal
               isOpen={showProgramUpload}
               onClose={() => setShowProgramUpload(false)}
@@ -332,31 +447,23 @@ const AdminPage = () => {
         {activeTab === 'branch-management' && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Branch Management</h2>
-            <button onClick={() => setShowBranchUpload(true)} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all mb-6">
-              <Upload size={18} /> Upload Branches
-            </button>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Branch Name</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Code</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Specialization</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Program</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {branches.map((b, i) => (
-                    <tr key={b.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-4 py-3 border-b">{b.name}</td>
-                      <td className="px-4 py-3 border-b">{b.code}</td>
-                      <td className="px-4 py-3 border-b">{b.specialization}</td>
-                      <td className="px-4 py-3 border-b">{programs.find(p => p.id === b.programId)?.name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <p className="text-sm text-gray-600 mb-6">Upload branch data using Excel files. Download the template to see the required format.</p>
+            
+            <div className="flex gap-3">
+              <button 
+                onClick={downloadBranchTemplate}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+              >
+                <Download size={18} /> Download Template
+              </button>
+              <button 
+                onClick={() => setShowBranchUpload(true)} 
+                className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+              >
+                <Upload size={18} /> Upload Branches
+              </button>
             </div>
+
             <UploadModal
               isOpen={showBranchUpload}
               onClose={() => setShowBranchUpload(false)}
@@ -374,31 +481,23 @@ const AdminPage = () => {
         {activeTab === 'hod-management' && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">HOD Management</h2>
-            <button onClick={() => setShowHodUpload(true)} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all mb-6">
-              <Upload size={18} /> Upload HODs
-            </button>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Name</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Email</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Branch</th>
-                    <th className="px-4 py-3 text-left border-b font-semibold text-gray-700">Designation</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {hods.map((h, i) => (
-                    <tr key={h.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-4 py-3 border-b">{h.name}</td>
-                      <td className="px-4 py-3 border-b">{h.email}</td>
-                      <td className="px-4 py-3 border-b">{branches.find(b => b.id === h.branchId)?.name}</td>
-                      <td className="px-4 py-3 border-b">{h.designation}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <p className="text-sm text-gray-600 mb-6">Upload HOD data using Excel files. Download the template to see the required format.</p>
+            
+            <div className="flex gap-3">
+              <button 
+                onClick={downloadHodTemplate}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+              >
+                <Download size={18} /> Download Template
+              </button>
+              <button 
+                onClick={() => setShowHodUpload(true)} 
+                className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+              >
+                <Upload size={18} /> Upload HODs
+              </button>
             </div>
+
             <UploadModal
               isOpen={showHodUpload}
               onClose={() => setShowHodUpload(false)}
@@ -416,47 +515,23 @@ const AdminPage = () => {
         {activeTab === 'student-management' && (
           <div className="bg-white rounded-xl shadow-lg p-6">
              <h2 className="text-xl font-bold text-gray-800 mb-4">Student Management</h2>
-             <div className="flex gap-4 mb-6">
-                <button onClick={() => setShowStudentUpload(true)} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all">
+             <p className="text-sm text-gray-600 mb-6">Upload student data using Excel files. Download the template to see the required format.</p>
+             
+             <div className="flex gap-3">
+                <button 
+                  onClick={downloadStudentTemplate}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+                >
+                  <Download size={18} /> Download Template
+                </button>
+                <button 
+                  onClick={() => setShowStudentUpload(true)} 
+                  className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+                >
                   <Upload size={18} /> Upload Students
                 </button>
-                {/* Honors/Minors can be added here similarly */}
-             </div>
-             
-             {/* Filters */}
-             <div className="grid grid-cols-2 gap-4 mb-4">
-                <select value={selectedProgram} onChange={e => setSelectedProgram(e.target.value)} className="w-full px-4 py-2 border rounded-lg">
-                  <option value="">All Programs</option>
-                  {programs.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                </select>
-                <select value={selectedBranch} onChange={e => setSelectedBranch(e.target.value)} className="w-full px-4 py-2 border rounded-lg">
-                   <option value="">All Branches</option>
-                   {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                </select>
              </div>
 
-             <div className="overflow-x-auto">
-               <table className="w-full">
-                 <thead className="bg-gray-100">
-                    <tr>
-                      <th className="px-4 py-3 border-b text-left">Roll Number</th>
-                      <th className="px-4 py-3 border-b text-left">Name</th>
-                      <th className="px-4 py-3 border-b text-left">Branch</th>
-                      <th className="px-4 py-3 border-b text-left">Batch</th>
-                    </tr>
-                 </thead>
-                 <tbody>
-                    {filteredStudents.map((s, i) => (
-                      <tr key={s.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                         <td className="px-4 py-3 border-b">{s.rollNumber}</td>
-                         <td className="px-4 py-3 border-b">{s.name}</td>
-                         <td className="px-4 py-3 border-b">{branches.find(b => b.id === s.branchId)?.name}</td>
-                         <td className="px-4 py-3 border-b">{s.batch}</td>
-                      </tr>
-                    ))}
-                 </tbody>
-               </table>
-             </div>
              <UploadModal
                 isOpen={showStudentUpload}
                 onClose={() => setShowStudentUpload(false)}
@@ -474,29 +549,23 @@ const AdminPage = () => {
         {activeTab === 'faculty-management' && (
            <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4">Faculty Management</h2>
-              <button onClick={() => setShowFacultyUpload(true)} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all mb-6">
-                <Upload size={18} /> Upload Faculty
-              </button>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-100">
-                     <tr>
-                       <th className="px-4 py-3 border-b text-left">Name</th>
-                       <th className="px-4 py-3 border-b text-left">Designation</th>
-                       <th className="px-4 py-3 border-b text-left">Branch</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {filteredFaculty.map((f, i) => (
-                       <tr key={f.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="px-4 py-3 border-b">{f.facultyName}</td>
-                          <td className="px-4 py-3 border-b">{f.designation}</td>
-                          <td className="px-4 py-3 border-b">{branches.find(b => b.id === f.branchId)?.name}</td>
-                       </tr>
-                     ))}
-                  </tbody>
-                </table>
+              <p className="text-sm text-gray-600 mb-6">Upload faculty data using Excel files. Download the template to see the required format.</p>
+              
+              <div className="flex gap-3">
+                <button 
+                  onClick={downloadFacultyTemplate}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+                >
+                  <Download size={18} /> Download Template
+                </button>
+                <button 
+                  onClick={() => setShowFacultyUpload(true)} 
+                  className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+                >
+                  <Upload size={18} /> Upload Faculty
+                </button>
               </div>
+
               <UploadModal
                 isOpen={showFacultyUpload}
                 onClose={() => setShowFacultyUpload(false)}
@@ -514,42 +583,23 @@ const AdminPage = () => {
         {activeTab === 'subject-management' && (
            <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4">Subject Management</h2>
-              <button onClick={() => setShowSubjectUpload(true)} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all mb-6">
-                 <Upload size={18} /> Upload Regulation
-              </button>
+              <p className="text-sm text-gray-600 mb-6">Upload subject data for specific regulations using Excel files. Download the template to see the required format.</p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <select value={selectedRegulation} onChange={e => setSelectedRegulation(e.target.value)} className="w-full px-4 py-2 border rounded-lg">
-                    {availableRegulations.map(r => <option key={r} value={r}>{r}</option>)}
-                  </select>
-                  <select value={selectedBranch} onChange={e => setSelectedBranch(e.target.value)} className="w-full px-4 py-2 border rounded-lg">
-                    <option value="">All Branches</option>
-                    {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                  </select>
+              <div className="flex gap-3">
+                <button 
+                  onClick={downloadSubjectTemplate}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+                >
+                  <Download size={18} /> Download Template
+                </button>
+                <button 
+                  onClick={() => setShowSubjectUpload(true)} 
+                  className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+                >
+                  <Upload size={18} /> Upload Subjects
+                </button>
               </div>
 
-              <div className="overflow-x-auto">
-                 <table className="w-full">
-                    <thead className="bg-gray-100">
-                       <tr>
-                         <th className="px-4 py-3 border-b text-left">Subject Name</th>
-                         <th className="px-4 py-3 border-b text-left">Year</th>
-                         <th className="px-4 py-3 border-b text-left">Semester</th>
-                         <th className="px-4 py-3 border-b text-left">Type</th>
-                       </tr>
-                    </thead>
-                    <tbody>
-                       {filteredSubjects.map((s, i) => (
-                         <tr key={s.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            <td className="px-4 py-3 border-b">{s.subjectName}</td>
-                            <td className="px-4 py-3 border-b">{s.year}</td>
-                            <td className="px-4 py-3 border-b">{s.semester}</td>
-                            <td className="px-4 py-3 border-b"><span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">{s.subjectType}</span></td>
-                         </tr>
-                       ))}
-                    </tbody>
-                 </table>
-              </div>
               <UploadModal
                 isOpen={showSubjectUpload}
                 onClose={() => setShowSubjectUpload(false)}
@@ -563,119 +613,433 @@ const AdminPage = () => {
            </div>
         )}
 
-        {/* === FACULTY / FEEDBACK MAPPING === */}
-        {activeTab === 'faculty-mapping' && (
+        {/* === FEEDBACK MANAGEMENT === */}
+        {activeTab === 'feedback-management' && (
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Feedback Mapping</h2>
-            <p className="text-sm text-gray-500 mb-6">Map faculty to subjects for a specific batch, branch, and semester.</p>
+            <h2 className="text-xl font-bold text-gray-800 mb-6">Feedback Management</h2>
             
-            {/* Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div>
-                 <label className="block text-sm font-semibold mb-1">Batch</label>
-                 <select 
-                    value={mappingFilters.batch} 
-                    onChange={e => setMappingFilters({...mappingFilters, batch: e.target.value})}
-                    className="w-full px-3 py-2 border rounded-lg"
-                 >
-                    <option value="">Select Batch</option>
-                    {batches.map(b => <option key={b.id} value={b.id}>{b.name} ({b.regulation})</option>)}
-                 </select>
-              </div>
-              <div>
-                 <label className="block text-sm font-semibold mb-1">Program</label>
-                 <select 
-                    value={mappingFilters.program} 
-                    onChange={e => setMappingFilters({...mappingFilters, program: e.target.value})}
-                    className="w-full px-3 py-2 border rounded-lg"
-                 >
-                    <option value="">Select Program</option>
-                    {programs.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                 </select>
-              </div>
-              <div>
-                 <label className="block text-sm font-semibold mb-1">Branch</label>
-                 <select 
-                    value={mappingFilters.branch} 
-                    onChange={e => setMappingFilters({...mappingFilters, branch: e.target.value})}
-                    disabled={!mappingFilters.program}
-                    className="w-full px-3 py-2 border rounded-lg disabled:bg-gray-100"
-                 >
-                    <option value="">Select Branch</option>
-                    {branches.filter(b => b.programId === Number(mappingFilters.program)).map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                 </select>
-              </div>
-              <div>
-                 <label className="block text-sm font-semibold mb-1">Semester</label>
-                 <select 
-                    value={mappingFilters.semester} 
-                    onChange={e => setMappingFilters({...mappingFilters, semester: e.target.value})}
-                    className="w-full px-3 py-2 border rounded-lg"
-                 >
-                    <option value="">Select Semester</option>
-                    {[1,2,3,4,5,6,7,8].map(s => <option key={s} value={s}>{s}</option>)}
-                 </select>
-              </div>
-            </div>
+            {/* Subsection Selection - Show only if no subsection is selected */}
+            {!feedbackSubsection && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Feedback Question Management Card */}
+                <div 
+                  onClick={() => setFeedbackSubsection('questions')}
+                  className="group cursor-pointer p-8 bg-gradient-to-br from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all hover:shadow-xl"
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <div className="bg-purple-500 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                      <FileText size={32} className="text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Feedback Question Management</h3>
+                    <p className="text-sm text-gray-600">Manage feedback questions and evaluation criteria</p>
+                  </div>
+                </div>
 
-            {mappingFilters.batch && mappingFilters.program && mappingFilters.branch && mappingFilters.semester ? (
-               <div className="space-y-4 animate-in fade-in">
-                  <div className="flex justify-between items-center bg-purple-50 p-3 rounded-lg border border-purple-100">
-                     <span className="font-semibold text-purple-800">
-                        Mapping for {batches.find(b => b.id === Number(mappingFilters.batch))?.name} 
-                        {' • '} 
-                        {branches.find(b => b.id === Number(mappingFilters.branch))?.name}
-                     </span>
-                     <button 
-                        onClick={() => alert('Mappings Saved!')}
-                        className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-                     >
-                        <Save size={18} /> Save Mapping
-                     </button>
+                {/* Feedback Mapping Card */}
+                <div 
+                  onClick={() => setFeedbackSubsection('mapping')}
+                  className="group cursor-pointer p-8 bg-gradient-to-br from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all hover:shadow-xl"
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <div className="bg-blue-500 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                      <MapPin size={32} className="text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Feedback Mapping</h3>
+                    <p className="text-sm text-gray-600">Map faculty with subjects for feedback collection</p>
+                    {isPublished && (
+                      <span className="mt-3 px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                        Published
+                      </span>
+                    )}
                   </div>
-                  
-                  {/* Mapping Cards */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                     {subjects
-                        .filter(s => s.branchId === Number(mappingFilters.branch) && s.semester === Number(mappingFilters.semester))
-                        .map(subject => (
-                          <div key={subject.id} className="border rounded-xl p-4 hover:shadow-md transition-all">
-                             <div className="flex justify-between items-start mb-3">
-                                <div>
-                                   <h4 className="font-bold text-gray-800">{subject.subjectName}</h4>
-                                   <p className="text-xs text-gray-500">{subject.subjectCode} • {subject.subjectType}</p>
-                                </div>
-                                {subjectMappings[subject.id] ? (
-                                   <button onClick={() => setSubjectMappings({...subjectMappings, [subject.id]: null})} className="text-red-500 hover:bg-red-50 p-1 rounded"><X size={16}/></button>
-                                ) : (
-                                   <span className="text-xs text-amber-500 bg-amber-50 px-2 py-1 rounded">Pending</span>
-                                )}
-                             </div>
-                             
-                             <select 
-                                value={subjectMappings[subject.id] || ''}
-                                onChange={(e) => setSubjectMappings({...subjectMappings, [subject.id]: e.target.value})}
-                                className="w-full px-3 py-2 border rounded-lg text-sm"
-                             >
-                                <option value="">Select Faculty</option>
-                                {faculty.filter(f => f.branchId === Number(mappingFilters.branch)).map(f => (
-                                   <option key={f.id} value={f.id}>{f.facultyName}</option>
-                                ))}
-                             </select>
-                          </div>
-                     ))}
-                     {subjects.filter(s => s.branchId === Number(mappingFilters.branch) && s.semester === Number(mappingFilters.semester)).length === 0 && (
-                        <div className="col-span-2 text-center py-10 text-gray-400">
-                           No subjects found for this criteria.
+                </div>
+              </div>
+            )}
+
+            {/* Feedback Question Management Subsection */}
+            {feedbackSubsection === 'questions' && (
+              <div className="space-y-6">
+                {/* Header with Back Button */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={() => setFeedbackSubsection(null)}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all"
+                    >
+                      <X size={18} /> Back
+                    </button>
+                    <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                      <FileText size={20} className="text-purple-600" />
+                      Feedback Question Management
+                    </h3>
+                  </div>
+                  <button 
+                    onClick={downloadFeedbackQuestionTemplate}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+                  >
+                    <Download size={18} /> Download Template
+                  </button>
+                </div>
+
+                {/* Add New Question */}
+                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-5 rounded-xl border border-purple-200">
+                  <h4 className="font-semibold text-gray-800 mb-3">Add New Question</h4>
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      value={newQuestion}
+                      onChange={(e) => setNewQuestion(e.target.value)}
+                      placeholder="Enter new feedback question or criteria"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                    <button 
+                      onClick={handleAddQuestion}
+                      className="flex items-center gap-2 px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all font-semibold"
+                    >
+                      <Upload size={18} /> Add Question
+                    </button>
+                  </div>
+                </div>
+
+                {/* Questions List */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-800">Current Feedback Questions ({feedbackQuestions.length})</h4>
+                  {feedbackQuestions.map((question) => (
+                    <div key={question.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all">
+                      <div className="flex items-start gap-4">
+                        <div className="bg-purple-100 text-purple-700 font-bold rounded-lg px-3 py-1 text-sm min-w-[50px] text-center">
+                          {question.sno}
                         </div>
-                     )}
+                        {editingQuestion === question.id ? (
+                          <div className="flex-1 flex gap-2">
+                            <input
+                              type="text"
+                              defaultValue={question.criteria}
+                              id={`edit-${question.id}`}
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            />
+                            <button
+                              onClick={() => {
+                                const newCriteria = document.getElementById(`edit-${question.id}`).value
+                                handleSaveQuestion(question.id, newCriteria)
+                              }}
+                              className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setEditingQuestion(null)}
+                              className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-all"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="flex-1 text-gray-700">{question.criteria}</p>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setEditingQuestion(question.id)}
+                                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm transition-all"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteQuestion(question.id)}
+                                className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-all"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Delete Confirmation Modal */}
+                {deleteConfirmModal.show && (
+                  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all animate-in fade-in zoom-in-95">
+                      {/* Header */}
+                      <div className="bg-gradient-to-r from-red-500 to-red-600 px-6 py-5 rounded-t-2xl">
+                        <h3 className="text-xl font-bold text-white">Delete Question</h3>
+                        <p className="text-sm text-red-100 mt-1">This action cannot be undone</p>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-6">
+                        <p className="text-gray-700 mb-4">Are you sure you want to delete this question?</p>
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                          <p className="text-sm text-gray-800 italic">"{deleteConfirmModal.questionText}"</p>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="border-t bg-gray-50 px-6 py-4 rounded-b-2xl flex gap-3 justify-end">
+                        <button 
+                          onClick={() => setDeleteConfirmModal({ show: false, questionId: null, questionText: '' })}
+                          className="px-5 py-2.5 bg-white border-2 border-gray-200 hover:bg-gray-100 text-gray-700 rounded-lg transition-all font-medium"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={confirmDeleteQuestion}
+                          className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all font-medium shadow-lg"
+                        >
+                          Delete Question
+                        </button>
+                      </div>
+                    </div>
                   </div>
-               </div>
-            ) : (
-               <div className="text-center py-12 text-gray-400 border-2 border-dashed rounded-xl">
-                  <MapPin size={40} className="mx-auto mb-3 opacity-20" />
-                  <p>Please select all filters to view mapping options</p>
-               </div>
+                )}
+              </div>
+            )}
+
+            {/* Feedback Mapping Subsection */}
+            {feedbackSubsection === 'mapping' && (
+              <div className="space-y-6">
+                {/* Header with Back Button */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={() => setFeedbackSubsection(null)}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all"
+                    >
+                      <X size={18} /> Back
+                    </button>
+                    <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                      <MapPin size={20} className="text-blue-600" />
+                      Feedback Mapping
+                    </h3>
+                    {isPublished && (
+                      <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                        Published
+                      </span>
+                    )}
+                  </div>
+                  <button 
+                    onClick={downloadFeedbackMappingTemplate}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+                  >
+                    <Download size={18} /> Download Template
+                  </button>
+                </div>
+
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-amber-800">
+                    <span className="font-semibold">⚠️ Important:</span> Until mapping is published, HODs cannot see the timetable in their dashboard.
+                  </p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-blue-800">
+                    <span className="font-semibold">ℹ️ Program Duration:</span> B.Tech (4 years), M.Tech (2 years), MBA (3 years), MCA (3 years)
+                  </p>
+                </div>
+
+                {/* Mapping Form */}
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200">
+                  <h4 className="font-semibold text-gray-800 mb-4">Create New Mapping</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-gray-700">Program</label>
+                      <select
+                        value={mappingForm.program}
+                        onChange={(e) => setMappingForm({ ...mappingForm, program: e.target.value, branch: '' })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Select Program</option>
+                        {programs.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-gray-700">Batch Year (Start)</label>
+                      <select
+                        value={mappingForm.batchYear}
+                        onChange={(e) => setMappingForm({ ...mappingForm, batchYear: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Select Year</option>
+                        {batches.map(b => <option key={b.id} value={b.startYear}>{b.startYear}</option>)}
+                      </select>
+                      {mappingForm.program && mappingForm.batchYear && (
+                        <p className="text-xs text-gray-600 mt-1">
+                          End Year: {calculateEndYear(mappingForm.program, mappingForm.batchYear)}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-gray-700">Branch</label>
+                      <select
+                        value={mappingForm.branch}
+                        onChange={(e) => setMappingForm({ ...mappingForm, branch: e.target.value })}
+                        disabled={!mappingForm.program}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                      >
+                        <option value="">Select Branch</option>
+                        {branches.filter(b => b.programId === Number(mappingForm.program)).map(b => 
+                          <option key={b.id} value={b.id}>{b.name}</option>
+                        )}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-gray-700">Year</label>
+                      <select
+                        value={mappingForm.year}
+                        onChange={(e) => setMappingForm({ ...mappingForm, year: e.target.value })}
+                        disabled={!mappingForm.program}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                      >
+                        <option value="">Select Year</option>
+                        {mappingForm.program && (() => {
+                          const program = programs.find(p => p.id === Number(mappingForm.program))
+                          const duration = program?.duration || 4
+                          const years = []
+                          for (let i = 1; i <= duration; i++) {
+                            const yearSuffix = i === 1 ? 'st' : i === 2 ? 'nd' : i === 3 ? 'rd' : 'th'
+                            years.push(<option key={i} value={`${i}${yearSuffix} year`}>{i}{yearSuffix} Year</option>)
+                          }
+                          return years
+                        })()}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-gray-700">Semester</label>
+                      <select
+                        value={mappingForm.semester}
+                        onChange={(e) => setMappingForm({ ...mappingForm, semester: e.target.value })}
+                        disabled={!mappingForm.program}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                      >
+                        <option value="">Select Semester</option>
+                        {mappingForm.program && (() => {
+                          const program = programs.find(p => p.id === Number(mappingForm.program))
+                          const duration = program?.duration || 4
+                          const maxSemester = duration * 2
+                          return Array.from({length: maxSemester}, (_, i) => i + 1).map(s => 
+                            <option key={s} value={s}>{s}</option>
+                          )
+                        })()}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-gray-700">Subject</label>
+                      <select
+                        value={mappingForm.subject}
+                        onChange={(e) => setMappingForm({ ...mappingForm, subject: e.target.value })}
+                        disabled={!mappingForm.branch || !mappingForm.semester}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                      >
+                        <option value="">Select Subject</option>
+                        {subjects
+                          .filter(s => s.branchId === Number(mappingForm.branch) && s.semester === Number(mappingForm.semester))
+                          .map(s => <option key={s.id} value={s.id}>{s.subjectName}</option>)}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-gray-700">Faculty</label>
+                      <select
+                        value={mappingForm.faculty}
+                        onChange={(e) => setMappingForm({ ...mappingForm, faculty: e.target.value })}
+                        disabled={!mappingForm.branch}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                      >
+                        <option value="">Select Faculty</option>
+                        {faculty.filter(f => f.branchId === Number(mappingForm.branch)).map(f => 
+                          <option key={f.id} value={f.id}>{f.facultyName}</option>
+                        )}
+                      </select>
+                    </div>
+
+                    <div className="flex items-end">
+                      <button
+                        onClick={handleAddMapping}
+                        className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all font-semibold"
+                      >
+                        Add Mapping
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mappings Table */}
+                <div className="bg-white rounded-xl border border-gray-200">
+                  <div className="p-4 border-b bg-gray-50">
+                    <h4 className="font-semibold text-gray-800">Current Mappings ({feedbackMappings.length})</h4>
+                  </div>
+                  {feedbackMappings.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">ID</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Program</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Batch Year</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Branch</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Year</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Sem</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Subject</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Faculty</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {feedbackMappings.map((mapping, idx) => (
+                            <tr key={mapping.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <td className="px-4 py-3 text-sm">{mapping.id}</td>
+                              <td className="px-4 py-3 text-sm">{mapping.program}</td>
+                              <td className="px-4 py-3 text-sm">{mapping.batchYear}</td>
+                              <td className="px-4 py-3 text-sm">{mapping.branch}</td>
+                              <td className="px-4 py-3 text-sm">{mapping.year}</td>
+                              <td className="px-4 py-3 text-sm">{mapping.semester}</td>
+                              <td className="px-4 py-3 text-sm">{mapping.subject}</td>
+                              <td className="px-4 py-3 text-sm">{mapping.faculty}</td>
+                              <td className="px-4 py-3">
+                                <button
+                                  onClick={() => handleDeleteMapping(mapping.id)}
+                                  className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs transition-all"
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center text-gray-400">
+                      <MapPin size={40} className="mx-auto mb-3 opacity-20" />
+                      <p>No mappings created yet. Add your first mapping above.</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Publish Button */}
+                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-200">
+                  <button 
+                    onClick={handlePublishMapping}
+                    disabled={isPublished}
+                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg transition-all font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Save size={20} /> {isPublished ? 'Already Published' : 'Publish Feedback Mapping'}
+                  </button>
+                  <p className="text-xs text-gray-600 mt-2">
+                    {isPublished 
+                      ? '✓ Mapping is published. HODs can view timetables.'
+                      : '* Publishing will make the timetable visible to HODs in their dashboard'
+                    }
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         )}

@@ -1,7 +1,8 @@
 export const programs = [
     { id: 1, name: 'B.Tech', duration: 4 },
     { id: 2, name: 'M.Tech', duration: 2 },
-    { id: 3, name: 'MBA', duration: 2 }
+    { id: 3, name: 'MBA', duration: 3 },
+    { id: 4, name: 'MCA', duration: 3 }
 ];
 
 export const branches = [
