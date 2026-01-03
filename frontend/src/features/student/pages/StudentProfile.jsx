@@ -23,8 +23,8 @@ const StudentProfile = () => {
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 lg:p-10">
         <div className="flex items-center gap-6 lg:gap-8 mb-8 pb-8 border-b border-gray-100">
-          <div className="w-20 h-20 lg:w-28 lg:h-28 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-white text-3xl lg:text-4xl font-bold shadow-lg">
-            RK
+          <div className="w-20 h-20 lg:w-28 lg:h-28 bg-gradient-to-br from-gray-400 to-gray-500 rounded-2xl flex items-center justify-center shadow-lg">
+            <User className="w-12 h-12 lg:w-16 lg:h-16 text-gray-200" />
           </div>
           <div>
             <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">{studentInfo.name}</h2>

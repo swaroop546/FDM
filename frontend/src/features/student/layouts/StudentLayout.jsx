@@ -222,8 +222,8 @@ const StudentDashboardHome = () => {
       {/* Student Info Card */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 lg:p-6 mb-6">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white text-base lg:text-lg font-semibold flex-shrink-0">
-            RK
+          <div className="w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-gray-400 to-gray-500 rounded-xl flex items-center justify-center flex-shrink-0">
+            <User className="w-7 h-7 lg:w-8 lg:h-8 text-gray-200" />
           </div>
           <div className="flex-1">
             <h2 className="text-base lg:text-lg font-semibold text-gray-800">{studentInfo.name}</h2>
