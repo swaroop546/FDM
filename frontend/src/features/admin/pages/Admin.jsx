@@ -2,9 +2,98 @@ import React, { useState } from 'react'
 import { 
   Users, Upload, BookOpen, 
   Calendar, X, GraduationCap, FileText, MapPin,
-  Briefcase, UserCheck, Layers, Save, Download
+  Briefcase, UserCheck, Layers, Save, Download, CheckCircle, Eye
 } from 'lucide-react'
+import * as XLSX from 'xlsx'
 import { students, faculty, subjects, programs, branches, batches, hods } from '../../../shared/constants/student'
+
+// --- Success Card Component ---
+const SuccessCard = ({ uploadData, onClose }) => {
+  if (!uploadData.show) return null;
+
+  return (
+    <div className="mt-6 animate-in fade-in slide-in-from-top-4">
+      {/* Success Message Card */}
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-xl p-6 shadow-lg">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-4">
+            <div className="bg-green-500 p-3 rounded-full">
+              <CheckCircle size={28} className="text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-green-900 mb-1">Upload Successful!</h3>
+              <p className="text-sm text-green-700 mb-2">{uploadData.type} data has been uploaded successfully</p>
+              <div className="flex items-center gap-4 text-xs text-green-600 mt-3">
+                <div className="flex items-center gap-2">
+                  <FileText size={16} />
+                  <span className="font-semibold">{uploadData.fileName}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">Size:</span>
+                  <span>{uploadData.fileSize}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">Rows:</span>
+                  <span>{uploadData.previewData.length - 1}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button 
+            onClick={onClose}
+            className="text-green-600 hover:bg-green-100 p-2 rounded-lg transition-all"
+          >
+            <X size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* File Preview Card */}
+      {uploadData.previewData.length > 0 && (
+        <div className="mt-4 bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-4">
+            <div className="flex items-center gap-3">
+              <Eye size={20} className="text-white" />
+              <h4 className="text-lg font-bold text-white">File Preview</h4>
+            </div>
+          </div>
+          <div className="p-4 overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  {uploadData.previewData[0]?.map((header, idx) => (
+                    <th
+                      key={idx}
+                      className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+                    >
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {uploadData.previewData.slice(1, 6).map((row, rowIdx) => (
+                  <tr key={rowIdx} className="hover:bg-gray-50">
+                    {row.map((cell, cellIdx) => (
+                      <td key={cellIdx} className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                        {cell || '-'}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {uploadData.previewData.length > 6 && (
+              <div className="mt-3 text-center text-xs text-gray-500">
+                Showing first 5 rows of {uploadData.previewData.length - 1} total rows
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // --- Reusable Upload Modal Component ---
 const UploadModal = ({ isOpen, onClose, title, subtitle, columns, onUpload, file, setFile }) => {
@@ -126,6 +215,9 @@ const UploadModal = ({ isOpen, onClose, title, subtitle, columns, onUpload, file
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState('batch-management')
 
+  // --- Upload Success State ---
+  const [uploadSuccess, setUploadSuccess] = useState({ show: false, type: '', fileName: '', fileSize: '', previewData: [] })
+
   // --- State for Management Columns ---
   // Batch
   const [showBatchUpload, setShowBatchUpload] = useState(false)
@@ -204,15 +296,42 @@ const AdminPage = () => {
   }
   
   // Handlers
-  const handleUploadGeneric = (file, type, setFile, setShow) => {
+  const handleUploadGeneric = async (file, type, setFile, setShow) => {
     if (!file) {
       alert('Please select an Excel file')
       return
     }
-    console.log(`Processing ${type} Excel file:`, file.name)
-    alert(`${type} uploaded successfully! (Excel parsing to be implemented)`)
-    setShow(false)
-    setFile(null)
+    
+    try {
+      // Read and parse the Excel file
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result)
+        const workbook = XLSX.read(data, { type: 'array' })
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 })
+        
+        // Get file size in readable format
+        const fileSize = file.size < 1024 ? file.size + ' B' : 
+                        file.size < 1048576 ? (file.size / 1024).toFixed(2) + ' KB' :
+                        (file.size / 1048576).toFixed(2) + ' MB'
+        
+        // Show success message with preview
+        setUploadSuccess({
+          show: true,
+          type: type,
+          fileName: file.name,
+          fileSize: fileSize,
+          previewData: jsonData.slice(0, 6) // Show first 6 rows (including header)
+        })
+        
+        setShow(false)
+        setFile(null)
+      }
+      reader.readAsArrayBuffer(file)
+    } catch (error) {
+      alert('Error processing file: ' + error.message)
+    }
   }
 
   const tabs = [
@@ -317,17 +436,13 @@ const AdminPage = () => {
 
   // Download Template Handlers
   const downloadTemplate = (type, columns) => {
-    // Create CSV content with column headers
-    const csvContent = columns.join(',') + '\n'
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-    link.setAttribute('href', url)
-    link.setAttribute('download', `${type}_template.csv`)
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    // Create Excel workbook
+    const worksheet = XLSX.utils.aoa_to_sheet([columns])
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Template')
+    
+    // Generate and download Excel file
+    XLSX.writeFile(workbook, `${type}_template.xlsx`)
   }
 
   const downloadBatchTemplate = () => downloadTemplate('batch', ['Program', 'Batch Year (Start)', 'Branch', 'Students Count'])
@@ -396,6 +511,13 @@ const AdminPage = () => {
               </button>
             </div>
 
+            {uploadSuccess.show && uploadSuccess.type === 'Batches' && (
+              <SuccessCard 
+                uploadData={uploadSuccess} 
+                onClose={() => setUploadSuccess({ show: false, type: '', fileName: '', fileSize: '', previewData: [] })}
+              />
+            )}
+
             <UploadModal
               isOpen={showBatchUpload}
               onClose={() => setShowBatchUpload(false)}
@@ -429,6 +551,13 @@ const AdminPage = () => {
                 <Upload size={18} /> Upload Programs
               </button>
             </div>
+
+            {uploadSuccess.show && uploadSuccess.type === 'Programs' && (
+              <SuccessCard 
+                uploadData={uploadSuccess} 
+                onClose={() => setUploadSuccess({ show: false, type: '', fileName: '', fileSize: '', previewData: [] })}
+              />
+            )}
 
             <UploadModal
               isOpen={showProgramUpload}
@@ -464,6 +593,13 @@ const AdminPage = () => {
               </button>
             </div>
 
+            {uploadSuccess.show && uploadSuccess.type === 'Branches' && (
+              <SuccessCard 
+                uploadData={uploadSuccess} 
+                onClose={() => setUploadSuccess({ show: false, type: '', fileName: '', fileSize: '', previewData: [] })}
+              />
+            )}
+
             <UploadModal
               isOpen={showBranchUpload}
               onClose={() => setShowBranchUpload(false)}
@@ -497,6 +633,13 @@ const AdminPage = () => {
                 <Upload size={18} /> Upload HODs
               </button>
             </div>
+
+            {uploadSuccess.show && uploadSuccess.type === 'HODs' && (
+              <SuccessCard 
+                uploadData={uploadSuccess} 
+                onClose={() => setUploadSuccess({ show: false, type: '', fileName: '', fileSize: '', previewData: [] })}
+              />
+            )}
 
             <UploadModal
               isOpen={showHodUpload}
@@ -532,6 +675,13 @@ const AdminPage = () => {
                 </button>
              </div>
 
+             {uploadSuccess.show && uploadSuccess.type === 'Students' && (
+               <SuccessCard 
+                 uploadData={uploadSuccess} 
+                 onClose={() => setUploadSuccess({ show: false, type: '', fileName: '', fileSize: '', previewData: [] })}
+               />
+             )}
+
              <UploadModal
                 isOpen={showStudentUpload}
                 onClose={() => setShowStudentUpload(false)}
@@ -566,6 +716,13 @@ const AdminPage = () => {
                 </button>
               </div>
 
+              {uploadSuccess.show && uploadSuccess.type === 'Faculty' && (
+                <SuccessCard 
+                  uploadData={uploadSuccess} 
+                  onClose={() => setUploadSuccess({ show: false, type: '', fileName: '', fileSize: '', previewData: [] })}
+                />
+              )}
+
               <UploadModal
                 isOpen={showFacultyUpload}
                 onClose={() => setShowFacultyUpload(false)}
@@ -599,6 +756,13 @@ const AdminPage = () => {
                   <Upload size={18} /> Upload Subjects
                 </button>
               </div>
+
+              {uploadSuccess.show && uploadSuccess.type === 'Subjects' && (
+                <SuccessCard 
+                  uploadData={uploadSuccess} 
+                  onClose={() => setUploadSuccess({ show: false, type: '', fileName: '', fileSize: '', previewData: [] })}
+                />
+              )}
 
               <UploadModal
                 isOpen={showSubjectUpload}
