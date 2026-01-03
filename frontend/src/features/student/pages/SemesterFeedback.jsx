@@ -127,8 +127,17 @@ const SemesterFeedback = () => {
       <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
         <button
           type="button"
-          onClick={() => toggleFaculty(facultyIndex)}
-          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-4 flex items-center justify-between gap-3 hover:from-blue-700 hover:to-blue-800 transition-all"
+          onClick={(e) => {
+            e.preventDefault();
+            toggleFaculty(facultyIndex);
+          }}
+          onTouchStart={(e) => {
+            e.currentTarget.style.transform = 'scale(0.98)';
+          }}
+          onTouchEnd={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-4 flex items-center justify-between gap-3 hover:from-blue-700 hover:to-blue-800 transition-all focus:outline-none touch-manipulation"
         >
           <div className="flex items-center gap-3 flex-1 text-left">
             <div className="shrink-0 w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
@@ -173,16 +182,23 @@ const SemesterFeedback = () => {
                   </div>
                   <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-center sm:justify-end mt-2 sm:mt-0">
                     {[1, 2, 3, 4, 5].map(rating => (
-                      <label key={rating} className="flex items-center cursor-pointer group">
+                      <label 
+                        key={rating} 
+                        className="flex items-center cursor-pointer group"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRatingChange(item.id, rating);
+                        }}
+                      >
                         <input
                           type="radio"
                           name={`rating-${item.id}`}
                           value={rating}
                           checked={item.rating === rating}
-                          onChange={() => handleRatingChange(item.id, rating)}
-                          className="w-4 h-4 text-blue-600 cursor-pointer"
+                          onChange={() => {}}
+                          className="w-4 h-4 text-blue-600 cursor-pointer pointer-events-none"
                         />
-                        <span className="ml-1 text-xs text-gray-700 group-hover:text-blue-600 font-medium">{rating}</span>
+                        <span className="ml-1 text-xs text-gray-700 group-hover:text-blue-600 font-medium pointer-events-none">{rating}</span>
                       </label>
                     ))}
                   </div>
